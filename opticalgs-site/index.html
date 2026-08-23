@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="fr" class="is-loading">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#fbfaf8" />
+    <title>Optical G&amp;S · Vos yeux méritent le mieux</title>
+    <meta
+      name="description"
+      content="Optical G&amp;S, opticien à Casablanca. Examen de la vue, lunettes de vue et de soleil, lentilles de contact. Boutique en ligne et livraison au Maroc."
+    />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!--
+      One typeface, self-hosted, so there is no third party to preconnect to.
+      It is preloaded because the CSS that declares it is itself a request:
+      without this the browser does not learn the font exists until the
+      stylesheet has arrived and parsed.
+    -->
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/ReadexPro.woff2" crossorigin />
+
+    <!--
+      Applied before the first paint, and deliberately before the stylesheet:
+      reading the stored theme from React would leave one frame of the wrong
+      palette on every load, which is the white flash every dark site is
+      judged by. This mirrors apply() in src/lib/theme.jsx.
+    -->
+    <script>
+      ;(function () {
+        try {
+          var stored = localStorage.getItem('opticalgs:theme')
+          if (stored === 'light' || stored === 'dark') {
+            document.documentElement.setAttribute('data-theme', stored)
+          }
+        } catch (e) {
+          /* Safari private mode throws rather than returning null. The
+             system preference is a fine fallback. */
+        }
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

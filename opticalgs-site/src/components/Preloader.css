@@ -1,0 +1,51 @@
+/*
+ * Gold, and over in under two seconds.
+ *
+ * The intro is the one moment the accent is allowed to fill the screen: it
+ * carries no content to read and it sets the brand colour before the page
+ * itself goes quiet and light.
+ */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  background: var(--gold);
+  color: var(--on-gold);
+  /* The wipe is driven from GSAP; this is only the starting state. */
+  clip-path: inset(0 0 0 0);
+}
+
+.preloader__center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  padding-inline: var(--pad-x);
+}
+
+.preloader__word {
+  font-size: var(--fs-label);
+  font-weight: var(--w-regular);
+  letter-spacing: var(--track-wordmark);
+  text-transform: uppercase;
+  margin-inline-end: calc(var(--track-wordmark) * -1);
+}
+
+.preloader__rule {
+  display: block;
+  width: min(180px, 40vw);
+  height: 1px;
+  background: rgba(20, 23, 26, 0.22);
+  overflow: hidden;
+}
+
+.preloader__sweep {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--on-gold);
+  transform-origin: left center;
+  transform: scaleX(0);
+}

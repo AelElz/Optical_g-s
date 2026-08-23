@@ -1,0 +1,238 @@
+.about-intro {
+  padding-bottom: clamp(48px, 8vh, 90px);
+}
+
+.about-intro__text {
+  max-width: 62ch;
+  font-size: var(--fs-lede);
+  line-height: 1.62;
+  color: var(--ink-body);
+}
+
+/* Why choose us */
+
+.about-why {
+  padding-block: clamp(56px, 9vh, 104px);
+  background: var(--surface);
+}
+
+.about-why__title {
+  margin-bottom: clamp(26px, 3.6vw, 44px);
+}
+
+/*
+ * Four equal tiles, the first in gold.
+ *
+ * This started as a bento with the first tile spanning two of three columns.
+ * Four items across a three-column grid is five cells, so the layout ended
+ * with a visible hole in the bottom-right corner and the emphasis read as a
+ * mistake rather than as a hierarchy. Even tiles with one accent say the
+ * same thing without the hole.
+ */
+.about-why__grid {
+  display: grid;
+  gap: clamp(12px, 1.6vw, 20px);
+  grid-template-columns: 1fr;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 640px) {
+  .about-why__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1060px) {
+  .about-why__grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.about-why__card {
+  height: 100%;
+  padding: clamp(22px, 2.8vw, 34px);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--surface);
+}
+
+.about-why__card--gold {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+.about-why__n {
+  display: block;
+  margin-bottom: 14px;
+  font-size: 0.76rem;
+  font-weight: var(--w-medium);
+  font-variant-numeric: tabular-nums;
+  color: var(--gold-ink);
+}
+
+.about-why__card--gold .about-why__n {
+  color: var(--ink-muted);
+}
+
+.about-why__card h3 {
+  margin: 0 0 8px;
+  font-size: var(--fs-sub);
+  font-weight: var(--w-medium);
+  letter-spacing: -0.022em;
+  line-height: 1.15;
+}
+
+.about-why__card p {
+  margin: 0;
+  font-size: var(--fs-small);
+  line-height: 1.55;
+  color: var(--ink-body);
+}
+
+.about-why__card--gold p {
+  color: rgba(20, 23, 26, 0.72);
+}
+
+/* Selection */
+
+.about-selection {
+  padding-block: clamp(56px, 9vh, 104px);
+}
+
+.about-selection__inner {
+  display: grid;
+  gap: clamp(28px, 4vw, 60px);
+  align-items: center;
+}
+
+@media (min-width: 960px) {
+  .about-selection__inner {
+    grid-template-columns: 0.85fr 1.15fr;
+  }
+}
+
+.about-selection__list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.about-selection__list > li {
+  border-bottom: 1px solid var(--line);
+}
+
+.about-selection__row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-block: clamp(14px, 1.8vw, 20px);
+  font-size: clamp(1.02rem, 1.7vw, 1.28rem);
+  font-weight: var(--w-regular);
+  letter-spacing: -0.015em;
+}
+
+.about-selection__mark {
+  flex: none;
+  color: var(--gold-ink);
+}
+
+.about-selection__photos {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(10px, 1.4vw, 16px);
+}
+
+.about-selection__photo {
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--r);
+  background: var(--plate);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line-soft);
+}
+
+.about-selection__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* No padding. Every catalogue photograph is normalised to a 4:3 canvas
+     with the frame filling 86% of it, so the breathing room is baked into
+     the image and adding more here would shrink it twice. */
+  padding: 0;
+  filter: brightness(var(--plate-dim));
+}
+
+/* Store */
+
+.about-store {
+  padding-block: clamp(56px, 9vh, 104px);
+  background: var(--deep);
+  color: var(--on-dark);
+}
+
+.about-store__grid {
+  display: grid;
+  gap: clamp(28px, 4vw, 56px);
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .about-store__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.about-store__photo {
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--r);
+  aspect-ratio: 4 / 3;
+}
+
+.about-store__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-store__name {
+  margin: 0 0 6px;
+  font-size: var(--fs-sub);
+  font-weight: var(--w-medium);
+  letter-spacing: -0.022em;
+  color: var(--gold);
+}
+
+.about-store__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: clamp(22px, 3vw, 30px);
+}
+
+/*
+ * The about page's store section is ink but is not a .panel, so the panel
+ * scoped button rules do not reach it. Flip the ghost button's polarity here
+ * rather than making every dark surface a panel.
+ */
+.about-store .btn--ghost {
+  border-color: var(--line-dark);
+  color: var(--on-dark);
+}
+
+.about-store .btn--ghost:hover,
+.about-store .btn--ghost:focus-visible {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.about-store .section-lede {
+  color: var(--white-body);
+}

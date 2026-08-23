@@ -1,0 +1,101 @@
+/*
+ * Shared chrome for the form pages: booking, contact, cart and the about
+ * page's head.
+ *
+ * These are utility surfaces. The motion budget is deliberately small: a
+ * staggered enter and nothing else. Someone filling in a phone number should
+ * not be waiting on choreography.
+ */
+
+.page {
+  background: var(--surface);
+  min-height: 100svh;
+}
+
+.page--white {
+  background: var(--surface);
+}
+
+/* Page head */
+
+.page__head {
+  padding-block: clamp(130px, 18vh, 200px) var(--space-xl);
+}
+
+.page__title {
+  max-width: 18ch;
+}
+
+.page__rule {
+  width: min(220px, 40%);
+  margin-top: clamp(24px, 3vw, 36px);
+}
+
+/* The card */
+
+/*
+ * A ruled sheet, not a rounded box.
+ *
+ * The form used to sit in a 32px-radius white card with a border all the way
+ * round, which is the shape of an app dialog. A single rule above it and the
+ * page's own paper behind it is what a printed order form looks like.
+ */
+.form-card {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 2.6vw, 30px);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--ink);
+}
+
+.form-card__title {
+  margin: 0;
+  font-size: var(--fs-sub);
+  font-weight: var(--w-light);
+  letter-spacing: -0.02em;
+}
+
+.form-grid {
+  display: grid;
+  gap: clamp(18px, 2.4vw, 28px);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 620px) {
+  .form-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .form-grid--two {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.form-actions .btn {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* Aside */
+
+.page__aside {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(24px, 3vw, 36px);
+  align-self: start;
+}
+
+@media (min-width: 980px) {
+  .page__aside {
+    /* Follows the form down a long page rather than leaving a column of white
+       space beside it. */
+    position: sticky;
+    top: 110px;
+  }
+}

@@ -1,0 +1,1195 @@
+/*
+ * Optical G&S design system.
+ *
+ * The reference points are the luxury houses in awesome-design-md, namely
+ * Bugatti, Ferrari and Lamborghini. What they have in common is not
+ * decoration, it is what they refuse:
+ *
+ *   ONE typeface, at modest weights. Emphasis comes from size, case and
+ *   tracking, never from bold. Ferrari's display sits at 500 and Bugatti's at
+ *   400; neither brand sets a bold headline anywhere.
+ *
+ *   SHARP corners. Ferrari puts 0px on every CTA, card and band, and calls it
+ *   automotive precision. A 24px radius reads as a consumer app.
+ *
+ *   HAIRLINES, not shadows. There is no drop-shadow tier in either system.
+ *   Depth comes from photography and from empty space.
+ *
+ *   ONE accent, used scarcely, and a great deal of nothing around it.
+ *
+ * Three colours, in the ratio the brief set: gold and white each carry about
+ * 40% of the surface, ink the remaining 20%. That is also why the site is
+ * light by default, with at most one ink chapter per page.
+ */
+
+:root {
+  /*
+   * BRAND CONSTANTS. These three never change, in either theme. They are the
+   * client's palette and the whole point of the ratio in the brief.
+   */
+  --gold: #e8c351;
+  --white: #ffffff;
+  --ink-brand: #14171a;
+
+  /*
+   * SEMANTIC LAYER. Everything below is a role, not a colour, and every one
+   * of them is redefined in the dark blocks further down.
+   *
+   * Components must use these and never the constants above, or they will
+   * look correct in one theme and be unreadable in the other. The two
+   * exceptions are documented at their point of use: the gold band keeps its
+   * colour in both themes, so the tokens for text on gold do not flip.
+   */
+
+  /* Surfaces, from the page ground to the deepest band. */
+  --surface: #fbfaf8;
+  --surface-2: #ffffff;
+  --deep: #17191c;
+
+  /*
+   * The plate a product photograph sits on.
+   *
+   * It stays light in BOTH themes and it is the one deliberate bright
+   * rectangle in dark mode. The catalogue is 542 supplier photographs shot on
+   * white, off-white and grey studio grounds; keying those grounds out to
+   * transparency was tried and abandoned, because it fails on exactly the
+   * frames that matter (a rimless pair keeps a bright blob where the lens
+   * interior was, and a grey-ground shot keeps a hard rectangle). A lightbox
+   * plate cannot fail on a bad photograph, and a lit product in a dark room
+   * is how the reference houses shoot anyway. In dark mode it is warmed and
+   * dimmed so a grid of them does not glare.
+   */
+  --plate: #ffffff;
+  --plate-dim: 1;
+
+  /* Foreground. --ink is the text colour, not the brand ink; it inverts. */
+  --ink: #14171a;
+  --ink-body: rgba(20, 23, 26, 0.68);
+  --ink-muted: rgba(20, 23, 26, 0.62);
+
+  /* A solid block that always contrasts with the surface: the primary
+     button, the nav badge, the add bar. */
+  --invert: #14171a;
+  --invert-text: #ffffff;
+
+  /* Text on the deep band and on the gold band. The gold band keeps its
+     colour in both themes, so --on-gold does not flip. */
+  --on-dark: #ffffff;
+  --on-gold: #14171a;
+  --white-body: rgba(255, 255, 255, 0.68);
+  --white-muted: rgba(255, 255, 255, 0.5);
+
+  /* The accent, at a contrast that carries text on the current surface. On
+     white the brand gold is about 1.7:1 and cannot; on near-black it can, so
+     dark mode gets the real thing. */
+  --gold-ink: #8a6b12;
+  --gold-quiet: #f3e6bd;
+  --gold-quiet-text: #4d3d06;
+
+  /* Hairlines. There is no shadow scale in this system. */
+  --line: rgba(20, 23, 26, 0.12);
+  --line-soft: rgba(20, 23, 26, 0.07);
+  --line-dark: rgba(255, 255, 255, 0.16);
+  --line-dark-soft: rgba(255, 255, 255, 0.08);
+  --line-gold: rgba(20, 23, 26, 0.18);
+
+  /* Glass, for the nav and nothing else. */
+  --glass: rgba(251, 250, 248, 0.78);
+  --glass-solid: rgba(251, 250, 248, 0.9);
+
+  /* Google's own map is a bright sheet. Dark mode inverts it. */
+  --map-filter: saturate(0.62) contrast(1.02);
+
+  /* Kept for the few places that need the literal brand ink whatever the
+     theme is doing, such as text sitting on the gold band. */
+  --pure-ink: #14171a;
+
+  /* A wash for hover on a quiet control, and the next hairline up. */
+  --hover-wash: rgba(20, 23, 26, 0.06);
+  --line-strong: rgba(20, 23, 26, 0.3);
+
+  /*
+   * The colour a panel is tinted with as the next one covers it. On a light
+   * page a grey darkens; on a dark page the same grey LIGHTENS, so it flips
+   * with the theme rather than being a fixed value.
+   */
+  --shade-color: #6b6f74;
+
+  /* The layer behind a modal. */
+  --scrim: rgba(20, 23, 26, 0.42);
+
+  /* The one non-brand hue on the site: a form that will not send. */
+  --danger: #9a3412;
+  --danger-text: #7c2d12;
+  --danger-quiet: rgba(154, 52, 18, 0.06);
+
+  /* Type.
+   *
+   * One family. Not a display face plus a text face, not a webfont plus a
+   * system fallback that shifts the layout when it swaps: one variable file,
+   * self-hosted, carrying every word on the site.
+   *
+   * Three weights are used and no more. 300 for display, 400 for everything,
+   * 500 where a label has to hold its own against a photograph. Nothing is
+   * ever bold.
+   */
+  --font: 'Readex Pro', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --w-light: 300;
+  --w-regular: 400;
+  --w-medium: 500;
+
+  /* Fluid, and the tracking goes NEGATIVE as the size grows, which is how a
+     geometric sans holds together at display size. */
+  --fs-display: clamp(2.6rem, 7.4vw, 6.6rem);
+  --fs-title: clamp(1.9rem, 4.2vw, 3.4rem);
+  --fs-sub: clamp(1.25rem, 2.1vw, 1.75rem);
+  --fs-lede: clamp(1rem, 1.25vw, 1.15rem);
+  --fs-body: clamp(0.94rem, 1vw, 1rem);
+  --fs-small: 0.875rem;
+  --fs-label: 0.72rem;
+
+  /* The label tracking, in one place: kickers, nav, buttons, table heads. */
+  --track-label: 0.2em;
+  --track-wordmark: 0.26em;
+
+  /* Space, on an 8pt ladder */
+  --space-xxs: 4px;
+  --space-xs: 8px;
+  --space-sm: 16px;
+  --space-md: 24px;
+  --space-lg: 32px;
+  --space-xl: 48px;
+  --space-2xl: 64px;
+  --space-3xl: 96px;
+  /* Section rhythm is deliberately long. These pages are mostly photograph
+     and very little text, and the emptiness is the luxury. */
+  --space-section: clamp(80px, 11vh, 140px);
+
+  --container: 1320px;
+  --narrow: 860px;
+  /*
+   * The page gutter also clears the notch. On a landscape iPhone the safe
+   * inset is 44px or more, and without this the first character of every
+   * line sits under the rounded corner.
+   */
+  --pad-x: max(clamp(20px, 5vw, 72px), env(safe-area-inset-left), env(safe-area-inset-right));
+  --nav-h: 68px;
+
+  /*
+   * Corners.
+   *
+   * Zero, everywhere structural. --r-pill exists only for the two round
+   * indicators on the page, the cart count and the language toggle, where a
+   * square would read as a rendering fault rather than as a choice.
+   */
+  --r: 0px;
+  --r-pill: 999px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Film grain, one small feTurbulence tile. The ink chapter only. */
+  --grain-tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+
+  color-scheme: light;
+  font-family: var(--font);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* =====================================================================
+ * Dark mode
+ *
+ * Three blocks, and all three are needed.
+ *
+ *   :root                      the light palette, above
+ *   prefers-color-scheme: dark the system default, when no choice is stored
+ *   [data-theme="dark"]        an explicit choice, which must win over the
+ *                              system in BOTH directions
+ *
+ * The guard on the media block is what makes "light" beat a dark system:
+ * without :not([data-theme="light"]) the media query would still apply and
+ * the toggle would only work one way.
+ *
+ * The values are written out twice rather than shared, because CSS has no
+ * way to reference a block of declarations. Keep the two lists identical.
+ * ===================================================================== */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+
+    --surface: #101214;
+    --surface-2: #16181b;
+    --deep: #08090a;
+
+    --plate: #eceae5;
+    --plate-dim: 0.93;
+
+    --ink: #f1f0ed;
+    --ink-body: rgba(241, 240, 237, 0.64);
+    --ink-muted: rgba(241, 240, 237, 0.52);
+
+    --invert: #f1f0ed;
+    --invert-text: #14171a;
+
+    --on-dark: #f1f0ed;
+
+    --gold-ink: #e8c351;
+    --gold-quiet: rgba(232, 195, 81, 0.12);
+    --gold-quiet-text: #e8c351;
+
+    --line: rgba(255, 255, 255, 0.14);
+    --line-soft: rgba(255, 255, 255, 0.07);
+
+    --glass: rgba(16, 18, 20, 0.72);
+    --glass-solid: rgba(16, 18, 20, 0.88);
+
+    --map-filter: invert(0.92) hue-rotate(180deg) saturate(0.5) contrast(0.92);
+
+    --hover-wash: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.34);
+    --shade-color: #05070a;
+    --scrim: rgba(4, 6, 8, 0.62);
+    --danger: #f0805c;
+    --danger-text: #f6a488;
+    --danger-quiet: rgba(240, 128, 92, 0.1);
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --surface: #101214;
+  --surface-2: #16181b;
+  --deep: #08090a;
+
+  --plate: #eceae5;
+  --plate-dim: 0.93;
+
+  --ink: #f1f0ed;
+  --ink-body: rgba(241, 240, 237, 0.64);
+  --ink-muted: rgba(241, 240, 237, 0.52);
+
+  --invert: #f1f0ed;
+  --invert-text: #14171a;
+
+  --on-dark: #f1f0ed;
+
+  --gold-ink: #e8c351;
+  --gold-quiet: rgba(232, 195, 81, 0.12);
+  --gold-quiet-text: #e8c351;
+
+  --line: rgba(255, 255, 255, 0.14);
+  --line-soft: rgba(255, 255, 255, 0.07);
+
+  --glass: rgba(16, 18, 20, 0.72);
+  --glass-solid: rgba(16, 18, 20, 0.88);
+
+  --map-filter: invert(0.92) hue-rotate(180deg) saturate(0.5) contrast(0.92);
+
+  --hover-wash: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.34);
+  --shade-color: #05070a;
+  --scrim: rgba(4, 6, 8, 0.62);
+  --danger: #f0805c;
+  --danger-text: #f6a488;
+  --danger-quiet: rgba(240, 128, 92, 0.1);
+}
+
+
+/* =====================================================================
+ * The one typeface.
+ *
+ * Variable, self-hosted, subset to Latin. The upstream file also carries a
+ * full Arabic set and a second HEXP axis, which together are most of its
+ * weight and neither of which this site asks for.
+ *
+ * font-display: swap is safe here because there is no second family to swap
+ * FROM: the fallback is the system sans at the same size, so the reflow is a
+ * few pixels of width rather than a different typographic voice.
+ * ===================================================================== */
+
+@font-face {
+  font-family: 'Readex Pro';
+  src: url('/fonts/ReadexPro.woff2') format('woff2-variations');
+  font-weight: 200 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* =====================================================================
+ * Fixed-colour surfaces
+ *
+ * Two bands do not follow the theme. The gold band is the brand accent and
+ * is gold in both; the deep band is dark in both. Anything inside them that
+ * reads a foreground token would therefore invert underneath a surface that
+ * did not, which is how "light grey text on gold" happens in dark mode.
+ *
+ * So each band re-declares the semantic tokens for its own subtree. A
+ * component dropped into either one is then correct without knowing where it
+ * is, and without a scoped override of its own. This replaces a scatter of
+ * `.panel--gold .section-lede { color: ... }` rules that had to be written
+ * once per component and were only ever right by accident.
+ * ===================================================================== */
+
+.panel--gold,
+.section--gold,
+.shop-hero,
+.about-why__card--gold,
+.preloader {
+  --surface: var(--gold);
+  --surface-2: var(--gold);
+  --ink: var(--pure-ink);
+  --ink-body: rgba(20, 23, 26, 0.72);
+  --ink-muted: rgba(20, 23, 26, 0.7);
+  --line: rgba(20, 23, 26, 0.18);
+  --line-soft: rgba(20, 23, 26, 0.1);
+  --line-strong: rgba(20, 23, 26, 0.36);
+  --invert: var(--pure-ink);
+  --invert-text: var(--white);
+  --hover-wash: rgba(20, 23, 26, 0.08);
+  /* The accent cannot be the accent on top of itself. */
+  --gold-ink: rgba(20, 23, 26, 0.72);
+  color: var(--pure-ink);
+}
+
+.panel--ink,
+.section--ink,
+.footer,
+.menu,
+.navbar__strip {
+  --surface: var(--deep);
+  --surface-2: var(--deep);
+  --ink: var(--on-dark);
+  --ink-body: var(--white-body);
+  --ink-muted: var(--white-muted);
+  --line: var(--line-dark);
+  --line-soft: var(--line-dark-soft);
+  --line-strong: rgba(255, 255, 255, 0.36);
+  --invert: var(--gold);
+  --invert-text: var(--pure-ink);
+  --hover-wash: rgba(255, 255, 255, 0.08);
+  /* On a dark band the brand gold carries text at full strength. */
+  --gold-ink: var(--gold);
+  color: var(--on-dark);
+}
+
+
+
+/*
+ * html and body must stay free of overflow.
+ *
+ * `position: sticky` is silently ignored when ANY ancestor clips or scrolls,
+ * and the entire chapter stack is sticky. Setting overflow here does not
+ * error; it quietly degrades the whole page to ordinary scrolling.
+ */
+html {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  margin: 0;
+  /* No double-tap zoom delay on the controls, and no grey flash on tap: the
+     hover and active states are the feedback. */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: var(--fs-body);
+  font-weight: var(--w-regular);
+  line-height: 1.6;
+}
+
+/* Lenis smooths the native scroll; it needs the real scroller to stay live. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+html.is-loading,
+html.is-loading body {
+  overflow: hidden;
+}
+
+#root {
+  min-height: 100svh;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.panel--ink :focus-visible,
+.section--ink :focus-visible {
+  outline-color: var(--gold);
+}
+
+.container {
+  width: min(var(--container), 100% - 2 * var(--pad-x));
+  margin-inline: auto;
+}
+
+.container--narrow {
+  width: min(var(--narrow), 100% - 2 * var(--pad-x));
+  margin-inline: auto;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Every page starts with one, so a keyboard user is not walked through the
+   whole navigation on each route. */
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 300;
+  padding: 12px 20px;
+  background: var(--invert);
+  color: var(--invert-text);
+  font-size: var(--fs-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  translate: 0 -180%;
+  transition: translate 0.25s var(--ease-out);
+}
+
+.skip-link:focus-visible {
+  translate: 0 0;
+}
+
+/* =====================================================================
+ * Panel stack
+ *
+ * Every chapter is sticky, so a later chapter slides over the one before it
+ * while the covered chapter dims underneath. usePanelStack assigns the
+ * ascending z-index, the sticky offset and the shade.
+ * ===================================================================== */
+
+.panel {
+  position: relative;
+  min-height: calc(100svh + var(--dwell, 50svh));
+  overflow: clip;
+  display: flex;
+  flex-direction: column;
+  /* flex-start, not center: the panel is taller than the viewport, so
+     centring here would push content below the fold while it is pinned. */
+  justify-content: flex-start;
+}
+
+/*
+ * The last panel gets no dwell.
+ *
+ * Dwell is invisible on every other panel because the next one pins over it
+ * before it can scroll into view. The last panel has nothing above it in the
+ * stack and, being its container's final child, no sticky range either: the
+ * empty space would ride up the bottom of the screen as a growing blank band
+ * before the footer arrives.
+ */
+.panel:last-child {
+  min-height: 100svh;
+}
+
+.panel--light {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.panel--white {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.panel--gold {
+  background: var(--gold);
+  color: var(--on-gold);
+}
+
+.panel--ink {
+  background: var(--deep);
+  color: var(--on-dark);
+}
+
+.panel__inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  min-height: 100svh;
+  padding-block: var(--space-section);
+}
+
+/*
+ * Dims a panel as the next one covers it. Driven from JS through --shade so
+ * it tracks the smoothed scroll position rather than a fixed duration.
+ */
+.panel__shade {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: var(--shade, 0);
+  background: var(--pure-ink);
+}
+
+.panel--light .panel__shade,
+.panel--white .panel__shade,
+.panel--gold .panel__shade {
+  background: var(--shade-color);
+}
+
+/*
+ * Grain, on the single ink chapter and nowhere else.
+ *
+ * Sized in percentages, never a fixed height: a parent-sized layer drags its
+ * own edge into frame when it drifts, and a viewport-height layer falls short
+ * of a 150svh panel, leaving a hard horizontal seam between textured and flat
+ * black that slides as the panel settles into its pin. -14% is comfortably
+ * more than the 5% drift in the keyframes.
+ */
+.panel--ink .panel__grain {
+  position: absolute;
+  inset: -14%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: var(--grain-tile);
+  /* steps(1, end), not a smooth ease. Interpolating slides the texture;
+     stepping re-seeds it each frame, which is what reads as film. */
+  animation: grain-shift 0.7s steps(1, end) infinite;
+}
+
+@keyframes grain-shift {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-4%, 3%); }
+  40% { transform: translate(3%, -5%); }
+  60% { transform: translate(-2%, -3%); }
+  80% { transform: translate(4%, 2%); }
+}
+
+/* =====================================================================
+ * Type primitives
+ * ===================================================================== */
+
+/*
+ * Display.
+ *
+ * Weight 300, and the tracking is negative. A geometric sans at 100px sets
+ * far too loose at its default spacing, and the fix is the opposite of the
+ * one a label needs: labels open up, display closes in.
+ */
+.display {
+  margin: 0;
+  font-size: var(--fs-display);
+  font-weight: var(--w-light);
+  line-height: 1.0;
+  letter-spacing: -0.035em;
+  /* Glyph side bearing scales with size, so large type looks indented next to
+     small type even when the CSS boxes line up. Corrected in em so it holds
+     across the clamp, and logical so RTL corrects the far edge. */
+  margin-inline-start: -0.045em;
+  text-wrap: balance;
+}
+
+.section-title {
+  margin: 0;
+  font-size: var(--fs-title);
+  font-weight: var(--w-light);
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  margin-inline-start: -0.038em;
+  text-wrap: balance;
+}
+
+.section-lede {
+  max-width: 54ch;
+  margin: var(--space-md) 0 0;
+  font-size: var(--fs-lede);
+  font-weight: var(--w-regular);
+  line-height: 1.65;
+  color: var(--ink-body);
+}
+
+.panel--ink .section-lede,
+.section--ink .section-lede {
+  color: var(--white-body);
+}
+
+.panel--gold .section-lede,
+.section--gold .section-lede {
+  color: rgba(20, 23, 26, 0.7);
+}
+
+/* The uppercase, widely tracked label. Used for column headings, table
+   heads and anywhere a small string has to read as a label rather than as
+   copy. */
+.label {
+  font-size: var(--fs-label);
+  font-weight: var(--w-regular);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  line-height: 1.2;
+  color: var(--ink-muted);
+}
+
+.panel--ink .label,
+.section--ink .label {
+  color: var(--white-muted);
+}
+
+/* Prices, references, measurements, phone numbers. Lining figures of an even
+   width, so a column of them lines up. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+/* =====================================================================
+ * Reveal primitives
+ * ===================================================================== */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.9s var(--ease-out),
+    transform 0.9s var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 80ms);
+}
+
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/*
+ * Text wipe. The heading is masked and slides up from behind its own top
+ * edge, which reads as the words being uncovered rather than fading in. The
+ * clip has to be on a wrapper, not the text, or the mask travels with it.
+ */
+.wipe {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.1em;
+  margin-block: -0.1em;
+}
+
+.wipe > * {
+  display: block;
+  transform: translateY(105%);
+  transition: transform 1.1s var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+
+.wipe.is-in > * {
+  transform: none;
+}
+
+/* A hairline that draws itself in from the left as its section arrives. */
+.rule {
+  display: block;
+  height: 1px;
+  background: var(--line);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.1s var(--ease-out);
+}
+
+.rule.is-in {
+  transform: scaleX(1);
+}
+
+.panel--ink .rule,
+.section--ink .rule {
+  background: var(--line-dark);
+}
+
+.panel--gold .rule {
+  background: var(--line-gold);
+}
+
+/* =====================================================================
+ * Buttons
+ *
+ * Sharp, uppercase, tracked, regular weight. Ferrari puts 0px on every CTA
+ * and calls it precision; a pill here would undo the rest of the system.
+ * ===================================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75em;
+  min-height: 52px;
+  padding: 0 var(--space-lg);
+  border: 1px solid transparent;
+  border-radius: var(--r);
+  font-size: var(--fs-label);
+  font-weight: var(--w-regular);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    background-color 0.45s var(--ease-out),
+    border-color 0.45s var(--ease-out),
+    color 0.45s var(--ease-out);
+}
+
+/* The label's own tracking leaves a gap after the last letter that makes a
+   centred button look off-centre. */
+.btn > span:first-child {
+  margin-inline-end: calc(var(--track-label) * -1);
+}
+
+.btn--primary {
+  background: var(--invert);
+  border-color: var(--invert);
+  color: var(--invert-text);
+}
+
+.btn--primary:hover,
+.btn--primary:focus-visible {
+  background: transparent;
+  color: var(--ink);
+}
+
+.btn--ghost {
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+.btn--ghost:hover,
+.btn--ghost:focus-visible {
+  border-color: var(--ink);
+}
+
+.btn--gold {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--on-gold);
+}
+
+.btn--gold:hover,
+.btn--gold:focus-visible {
+  background: transparent;
+  color: var(--on-gold);
+  border-color: var(--on-gold);
+}
+
+/* On the ink chapter the polarity flips. */
+.panel--ink .btn--primary,
+.section--ink .btn--primary {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--on-gold);
+}
+
+.panel--ink .btn--primary:hover,
+.panel--ink .btn--primary:focus-visible,
+.section--ink .btn--primary:hover,
+.section--ink .btn--primary:focus-visible {
+  background: transparent;
+  color: var(--gold);
+}
+
+.panel--ink .btn--ghost,
+.section--ink .btn--ghost {
+  border-color: var(--line-dark);
+  color: var(--on-dark);
+}
+
+.panel--ink .btn--ghost:hover,
+.panel--ink .btn--ghost:focus-visible,
+.section--ink .btn--ghost:hover,
+.section--ink .btn--ghost:focus-visible {
+  border-color: var(--on-dark);
+}
+
+.panel--gold .btn--ghost,
+.section--gold .btn--ghost {
+  border-color: var(--line-gold);
+}
+
+.panel--gold .btn--ghost:hover,
+.panel--gold .btn--ghost:focus-visible {
+  border-color: var(--on-gold);
+}
+
+.btn__icon {
+  display: inline-block;
+  transition: translate 0.45s var(--ease-out);
+}
+
+.btn:hover .btn__icon {
+  translate: 4px 0;
+}
+
+/*
+ * The text link.
+ *
+ * A hairline under it that redraws from the left on hover. No colour change,
+ * no underline appearing from nothing: the line is always there and it only
+ * moves.
+ */
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  min-height: 24px;
+  padding-bottom: 4px;
+  position: relative;
+  font-size: var(--fs-label);
+  font-weight: var(--w-regular);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.link-arrow::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.28;
+  transform-origin: left;
+  transition:
+    opacity 0.45s var(--ease-out),
+    transform 0.55s var(--ease-out);
+}
+
+.link-arrow:hover::after,
+.link-arrow:focus-visible::after {
+  opacity: 1;
+}
+
+.panel--ink .link-arrow,
+.section--ink .link-arrow {
+  color: var(--gold);
+}
+
+.link-arrow svg {
+  transition: translate 0.45s var(--ease-out);
+}
+
+.link-arrow:hover svg {
+  translate: 4px 0;
+}
+
+/* =====================================================================
+ * Row hover
+ *
+ * A list row fills from the left on hover. The fill is a single scaled
+ * element, not a background transition, so it composites rather than
+ * repainting the row.
+ * ===================================================================== */
+
+.reveal-row {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: var(--space-md) var(--space-sm);
+  /* The fill is wider than the row and would otherwise escape it. */
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.reveal-row__fill {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: var(--invert);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.65s var(--ease-out);
+  pointer-events: none;
+}
+
+.panel--gold .reveal-row__fill {
+  background: var(--on-gold);
+}
+
+.panel--ink .reveal-row__fill {
+  background: var(--gold);
+}
+
+.reveal-row__text {
+  position: relative;
+  z-index: 1;
+}
+
+@media (pointer: fine) {
+  .reveal-row:hover .reveal-row__fill,
+  .reveal-row:focus-visible .reveal-row__fill {
+    transform: scaleX(1);
+  }
+
+  .reveal-row__text,
+  .reveal-row__text * {
+    transition: color 0.4s var(--ease-out) 0.1s;
+  }
+
+  .reveal-row:hover .reveal-row__text,
+  .reveal-row:hover .reveal-row__text * {
+    color: var(--invert-text);
+  }
+
+  .panel--ink .reveal-row:hover .reveal-row__text,
+  .panel--ink .reveal-row:hover .reveal-row__text * {
+    color: var(--on-gold);
+  }
+}
+
+/* =====================================================================
+ * Forms
+ *
+ * Underlined, not boxed. A grid of rounded boxes is the single most
+ * app-looking thing a page can carry; a rule under a field is how a printed
+ * form does it and how every one of the reference systems does it.
+ * ===================================================================== */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.field__label {
+  font-size: var(--fs-label);
+  font-weight: var(--w-regular);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.panel--ink .field__label,
+.section--ink .field__label {
+  color: var(--white-muted);
+}
+
+.field__control {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: var(--fs-body);
+  transition: border-color 0.35s var(--ease-out);
+}
+
+.field__control::placeholder {
+  color: var(--ink-muted);
+}
+
+.field__control:hover {
+  border-bottom-color: var(--line-strong);
+}
+
+/*
+ * :focus-visible, not :focus, and the outline stays.
+ *
+ * Killing `outline` on :focus removed the only keyboard affordance these
+ * fields had: the border darkening is a hover-weight change and reads as
+ * decoration, not as "you are here". The pointer case is handled by
+ * :focus-visible never matching a click.
+ */
+.field__control:focus {
+  border-bottom-color: var(--ink);
+}
+
+.field__control:focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 4px;
+}
+
+textarea.field__control {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+select.field__control {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7' fill='none'%3E%3Cpath d='M1 1L5.5 5.5L10 1' stroke='%2314171A' stroke-width='1.2'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 2px center;
+  padding-right: 28px;
+}
+
+/* Off-screen rather than display:none: some bots skip anything that is not
+   rendered at all. */
+.field--trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.form-note {
+  margin: 0;
+  font-size: var(--fs-small);
+  line-height: 1.6;
+  color: var(--ink-muted);
+}
+
+.form-status {
+  margin: 0;
+  padding: var(--space-sm) var(--space-md);
+  border-left: 2px solid var(--gold);
+  background: var(--gold-quiet);
+  font-size: var(--fs-small);
+  color: var(--gold-quiet-text);
+}
+
+.form-status--error {
+  border-left-color: var(--danger);
+  background: var(--danger-quiet);
+  color: var(--danger-text);
+}
+
+/*
+ * Errors are text, not a colour. The rule alone is invisible to a screen
+ * reader and ambiguous to anyone with a red-green deficiency, which is why
+ * every one of these is wired to its input through aria-describedby.
+ */
+.field__error {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--danger);
+}
+
+.field__control[aria-invalid='true'] {
+  border-bottom-color: var(--danger);
+}
+
+/* =====================================================================
+ * Reduced motion. Every animated thing needs a static fallback.
+ * ===================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  /*
+   * The selector has to match the one that turned the animation on. A media
+   * query adds no specificity, so a bare `.panel__grain` here loses to
+   * `.panel--ink .panel__grain` and the grain keeps re-seeding seven times a
+   * second for exactly the visitors who asked it not to.
+   */
+  .panel--ink .panel__grain {
+    animation: none;
+  }
+
+  .reveal,
+  .wipe > *,
+  .rule {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .btn,
+  .btn__icon,
+  .link-arrow::after,
+  .link-arrow svg,
+  .reveal-row__fill,
+  .reveal-row__text,
+  .skip-link,
+  .field__control {
+    transition: none;
+  }
+
+  .link-arrow::after {
+    opacity: 1;
+  }
+}
+
+/* =====================================================================
+ * Mobile. The sticky stack is desktop-only.
+ * ===================================================================== */
+
+@media (max-width: 860px) {
+  .panel {
+    /*
+     * JS clears the inline `top` when a panel drops out of sticky. A leftover
+     * `top` on a relative element offsets it and tears holes between the
+     * sections.
+     */
+    position: relative;
+    /* Nothing pins here, so dwell would be dead empty space. */
+    min-height: auto;
+  }
+
+  .panel__inner {
+    min-height: auto;
+    padding-block: clamp(64px, 9vh, 96px);
+  }
+
+  .panel__shade {
+    display: none;
+  }
+
+  /*
+   * The grain holds still on a phone. Re-seeding it seven times a second
+   * repaints a layer larger than the panel, forever, on the device least able
+   * to afford it. The texture is what matters; the flicker is a luxury for
+   * machines with a fan.
+   */
+  .panel--ink .panel__grain {
+    animation: none;
+  }
+}

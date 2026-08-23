@@ -1,0 +1,242 @@
+.quickview {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  display: grid;
+  place-items: center;
+  padding: var(--pad-x);
+}
+
+.quickview__scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--scrim);
+  /* A light blur behind a light sheet, so the grid reads as depth rather
+     than as a page that has simply been greyed out. */
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 0.42s var(--ease-out);
+}
+
+.quickview[data-open='true'] .quickview__scrim {
+  opacity: 1;
+}
+
+.quickview__sheet {
+  position: relative;
+  display: grid;
+  gap: clamp(20px, 3vw, 40px);
+  width: min(940px, 100%);
+  max-height: min(88svh, 760px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: clamp(20px, 3vw, 34px);
+  border-radius: var(--r);
+  background: var(--surface);
+  /* Enter from slightly below and slightly small, the way a sheet does. */
+  opacity: 0;
+  translate: 0 18px;
+  scale: 0.985;
+  transition:
+    opacity 0.45s var(--ease-out),
+    translate 0.45s var(--ease-out),
+    scale 0.45s var(--ease-out);
+}
+
+.quickview[data-open='true'] .quickview__sheet {
+  opacity: 1;
+  translate: 0 0;
+  scale: 1;
+}
+
+@media (min-width: 760px) {
+  .quickview__sheet {
+    grid-template-columns: 1.05fr 1fr;
+    align-items: center;
+  }
+}
+
+.quickview__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  transition:
+    background-color 0.3s var(--ease-out),
+    border-color 0.3s var(--ease-out);
+}
+
+.quickview__close:hover {
+  background: var(--invert);
+  border-color: var(--invert);
+  color: var(--invert-text);
+}
+
+.quickview__media {
+  border-radius: var(--r);
+  background: var(--plate);
+  aspect-ratio: 4 / 3;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.quickview__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* No padding. Every catalogue photograph is normalised to a 4:3 canvas
+     with the frame filling 86% of it, so the breathing room is baked into
+     the image and adding more here would shrink it twice. */
+  padding: 0;
+  filter: brightness(var(--plate-dim));
+}
+
+.quickview__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.quickview__brand {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: var(--w-medium);
+  letter-spacing: 0.05em;
+  color: var(--gold-ink);
+}
+
+.quickview__title {
+  margin: 4px 0 0;
+  font-size: clamp(1.7rem, 3.4vw, 2.5rem);
+  font-weight: var(--w-medium);
+  letter-spacing: -0.028em;
+  line-height: 1.06;
+}
+
+.quickview__price {
+  margin: 10px 0 0;
+  font-size: var(--fs-lede);
+  font-variant-numeric: tabular-nums;
+}
+
+.quickview__facts {
+  display: grid;
+  gap: 0;
+  margin: 22px 0 0;
+  border-top: 1px solid var(--line-soft);
+}
+
+.quickview__fact {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: var(--fs-small);
+}
+
+.quickview__fact dt {
+  color: var(--ink-body);
+}
+
+.quickview__fact dd {
+  margin: 0;
+  text-align: end;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.quickview__note {
+  margin: 9px 0 0;
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+}
+
+.quickview__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.quickview__add {
+  flex: 1;
+  min-width: 170px;
+}
+
+.quickview__add:disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.quickview__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 26px;
+  margin-top: 22px;
+}
+
+/* Quantity stepper, shared with the cart */
+
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  height: 48px;
+}
+
+.stepper__btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 46px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  transition:
+    background-color 0.25s var(--ease-out),
+    opacity 0.25s var(--ease-out);
+}
+
+.stepper__btn:hover:not(:disabled) {
+  background: var(--hover-wash);
+}
+
+.stepper__btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.stepper__value {
+  min-width: 26px;
+  text-align: center;
+  font-size: var(--fs-small);
+  font-weight: var(--w-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quickview__scrim,
+  .quickview__sheet,
+  .quickview__close,
+  .stepper__btn {
+    transition: none;
+  }
+
+  .quickview__sheet {
+    translate: 0 0;
+    scale: 1;
+  }
+}
