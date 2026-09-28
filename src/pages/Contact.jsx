@@ -3,14 +3,15 @@ import { useContent } from '../content'
 import { useReveal } from '../hooks/useReveal'
 import Field from '../components/Field'
 import Footer from '../components/Footer'
+import Heading from '../components/Heading'
 import Kicker from '../components/Kicker'
+import PageHead from '../components/PageHead'
 import { ArrowRight } from '../components/Icons'
 import Link from '../components/Link'
 import { Hours, MapEmbed, StoreCard } from '../components/StoreCard'
 import { LIMITS, clean, isEmail, mailto, screen, whatsapp } from '../lib/forms'
 import { telHref } from '../lib/format'
 import './Forms.css'
-import './Contact.css'
 
 export default function Contact() {
   const t = useContent()
@@ -86,25 +87,13 @@ export default function Contact() {
 
   return (
     <div ref={revealRef}>
-      <main id="top" className="page page--light">
-        <section className="page__head">
-          <div className="container">
-            <Kicker className="reveal">{copy.kicker}</Kicker>
-            <h1 className="display page__title">
-              <span className="wipe">
-                <span>{copy.title}</span>
-              </span>
-            </h1>
-            <span className="rule page__rule" aria-hidden="true" />
-            <p className="section-lede reveal" style={{ '--i': 1 }}>
-              {copy.lede}
-            </p>
-          </div>
-        </section>
+      <main id="top" className="page" data-surface="stone">
+        <PageHead kicker={copy.kicker} title={copy.title} lede={copy.lede} />
 
-        <section className="container contact-layout">
+        <section className="container page-layout">
           <form
             className="form-card reveal"
+            data-surface="white"
             onSubmit={(event) => submit(event, 'mail')}
             noValidate
           >
@@ -196,18 +185,18 @@ export default function Contact() {
             <p className="form-note">{copy.note}</p>
           </form>
 
-          <aside className="page__aside reveal" style={{ '--i': 1 }}>
+          <aside className="page-aside reveal" style={{ '--i': 1 }}>
             <StoreCard title={t.shop.name} />
             <Hours compact />
           </aside>
         </section>
 
-        <section className="find-section">
+        <section className="find-section" data-surface="white">
           <div className="container">
-            <Kicker className="reveal">{copy.findKicker}</Kicker>
-            <h2 className="section-title wipe">
-              <span>{copy.findTitle}</span>
-            </h2>
+            <div className="section-grid find-section__head">
+              <Kicker className="reveal">{copy.findKicker}</Kicker>
+              <Heading className="h2" text={copy.findTitle} />
+            </div>
 
             <div className="find-section__grid">
               <div className="find-section__map reveal">

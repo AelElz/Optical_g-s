@@ -32,9 +32,10 @@ npm run build
 ## What it is
 
 A recreation of [opticalgs.com](https://www.opticalgs.com) for a Casablanca
-optician. Six pages, French and English, light and dark, 542 real frames
-pulled from the shop's own catalogue API. React 19 + Vite, GSAP for the intro,
-Lenis for smooth scroll. No routing library, no UI kit, no CSS framework.
+optician. Six pages, French and English, 542 real frames pulled from the shop's own
+catalogue API. React 19 + Vite, GSAP for the intro, Lenis for smooth scroll.
+Redesigned on 2026-09-28 in the Devorise Media design language (see
+DESIGN.md and PRODUCT.md). No routing library, no UI kit, no CSS framework.
 
 ---
 
@@ -46,9 +47,8 @@ Everything the brief asked for is built and passing.
 | --- | --- |
 | Six pages | `/` `/boutique` `/boutique/panier` `/rendez-vous` `/a-propos` `/contact` |
 | Languages | French (source) and English, switchable, shape-checked in dev |
-| Themes | Light, dark, and follow-the-system, with no flash on load |
 | Catalogue | 542 frames, filters and sort in the URL, quick view, cart with undo |
-| Typeface | Readex Pro only, self-hosted, subset to Latin, 54 KB |
+| Typeface | Montserrat only, variable, self-hosted, subset to Latin, 38 KB |
 | Verification | 97 automated checks, all passing |
 
 ```bash
@@ -56,7 +56,9 @@ npm run dev -- --port 5219 --strictPort   # in one shell
 ./tools/run.sh                            # in another
 ```
 
-Last full run, all green:
+Last full run, all green. **This run predates the 2026-09-28 redesign:** the
+scripts in `tools/` target the old markup (the panel stack, the nav pill, the
+theme toggle) and need updating before they mean anything again.
 
 ```
 checks     10 passed, 0 failed     sticky stack, nav, deep links, cart
@@ -74,73 +76,23 @@ Chromium. It is not a dependency of the site. It defaults to Brave; point
 
 ---
 
-## The four rules the design rests on
+## The design, in one page
 
-Taken from the luxury houses in `awesome-design-md` (Bugatti, Ferrari,
-Lamborghini). Undoing any one of them undoes the redesign, so they are the
-first thing to protect.
+Read [DESIGN.md](DESIGN.md) for the full system and [PRODUCT.md](PRODUCT.md)
+for the product facts the owner confirmed.
 
-1. **One typeface, weights 300 to 500.** Readex Pro. Nothing is bold.
-   Emphasis is size, case and tracking. Labels, nav, buttons and kickers are
-   uppercase at `0.2em`.
-2. **Sharp corners.** `--r: 0`. The cart badge is the only rounded thing.
-3. **Hairlines, never shadows.** There is no shadow scale.
-4. **One accent, used scarcely.** Gold and white about 40% each, ink 20%.
-
-Plus two client instructions:
-
-- **Every section label carries the logo mark.** Use `<Kicker>`; never write a
-  bare `<p className="kicker">`.
-- **No dash as a connector in user-facing copy.** Not the em dash, not the en
-  dash, not a double hyphen. Ranges are written out ("10:00 à 20:00").
-
----
-
-## Dark mode, in one page
-
-The colour system is a **semantic layer**, and components must use it rather
-than the brand constants:
-
-```
---gold  --white  --ink-brand      never change
---surface --surface-2 --deep      the grounds
---ink --ink-body --ink-muted      the foreground; --ink INVERTS
---invert --invert-text            a block that always contrasts
---plate --plate-dim               where a product photograph sits
---line --line-soft --line-strong  hairlines
---gold-ink --gold-quiet           the accent, at a legible contrast
---scrim --hover-wash --shade-color --map-filter --danger
-```
-
-Three blocks in `src/index.css` define them: `:root` (light), a
-`prefers-color-scheme: dark` block guarded by `:not([data-theme="light"])`,
-and `[data-theme="dark"]`. All three are needed for an explicit choice to beat
-the system **in both directions**. The values are written twice on purpose;
-keep the two dark lists identical.
-
-Three things to know:
-
-- **Two bands do not follow the theme.** The gold band is gold in both and the
-  deep band is dark in both, so each **re-declares the semantic tokens for its
-  own subtree** (see "Fixed-colour surfaces" in `index.css`). A component
-  dropped into either is then correct without knowing where it is. If text on
-  gold looks wrong, the cause is almost always a per-component colour rule
-  shadowing that scope; delete the rule rather than adjusting it.
-- **The muted alphas are solved, not chosen.** 4.5:1 needs 0.591 on the light
-  ground, 0.478 on the dark one, 0.451 on the deep band and 0.652 on gold.
-  Every value sits just above its floor, so softening a label breaks AA.
-  `tools/contrast.mjs` walks every text node in both themes and will catch it.
-- **Product photographs sit on a light plate in both themes.** Keying the
-  white ground out to transparency was tried and abandoned: it fails on the
-  frames that matter, leaving a bright blob where a rimless lens interior was
-  and a hard rectangle on grey-ground shots. `--plate-dim` dims the photograph
-  in dark mode so a grid of them does not glare.
-
-The toggle is one button in the nav showing the theme it will switch **to**.
-`src/lib/theme.jsx` owns it; an inline script in `index.html` applies the
-stored value before first paint and must mirror `apply()` in that file.
-
----
+- **Tokens** in `src/styles/tokens.css`: primitives, then semantics, then
+  component knobs. Components read semantics only.
+- **Surfaces** through `data-surface` (`ink`, `deep`, `gold`, `white`,
+  `stone`), which re-declare the semantic tokens; the header wears whichever
+  surface is under it. There is no light/dark toggle any more (dropped with the
+  owner's agreement).
+- **Devorise grammar in G&S colours:** uppercase Montserrat display with a gold
+  accent word and full stop (`<Heading>`), pills, one gold stage per page,
+  margin labels (`<Kicker>`, with the logo mark: client rule), soft corners on
+  photos (owner's request).
+- **Client rules kept:** the logo mark before every section label, no dash as
+  a connector in copy.
 
 ## Two places where the data is thin, handled honestly
 
@@ -173,7 +125,7 @@ Nothing is broken. These are judgement calls left for you or the client.
    demo and its watermarks are inside the glyphs: every digit, the ampersand
    and the apostrophe render as a "PERSONAL USE ONLY" badge, which is unusable
    for a shop that prints prices and phone numbers. It is still in
-   `Design Assest/` if the commercial licence is bought. Readex Pro is
+   `Design Assest/` if the commercial licence is bought. Montserrat is
    OFL-licensed and ships with the site.
 3. **No backend.** Every form composes a `mailto:` or `wa.me` link in the
    visitor's own client. If one is added, everything currently safe becomes

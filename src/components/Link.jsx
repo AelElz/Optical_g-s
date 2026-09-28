@@ -38,7 +38,8 @@ export default function Link({ to, children, onNavigate, ...rest }) {
     onNavigate?.()
 
     const [path, hash] = to.split('#')
-    const samePage = (path || '/') === window.location.pathname
+    const samePage =
+      (path || '/') === window.location.pathname + (path?.includes('?') ? window.location.search : '')
 
     if (hash && samePage) {
       scrollTo(`#${hash}`, { history: true })

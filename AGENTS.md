@@ -37,8 +37,8 @@ Two environment facts that will mislead you:
 
 ### Sticky elements lie about their position, twice
 
-A pinned panel reports `top: 0` from `getBoundingClientRect()` **and** a shifted
-`offsetTop`. Resolving a scroll target from either means "scroll to where you
+A pinned element (the shop's filter bar, the service deck) reports `top: 0`
+from `getBoundingClientRect()` **and** a shifted `offsetTop`. Resolving a scroll target from either means "scroll to where you
 already are".
 
 Use `documentTop()` in `src/lib/motion.js`, which rebuilds the true position
@@ -50,62 +50,18 @@ unaffected by pinning.
 ### `html` and `body` must stay free of `overflow`
 
 `position: sticky` is silently ignored if **any** ancestor has
-`overflow: hidden/clip/auto/scroll`. The whole chapter stack is sticky.
+`overflow: hidden/clip/auto/scroll`. The service deck on the home page and
+the shop's filter bar are sticky.
 
-*Symptom: the depth effect degrades to ordinary scrolling, with no error.*
-
-### A pinned chapter taller than the viewport loses its head
-
-`usePanelStack` pins a tall panel at its BOTTOM (`top: viewport - height`) so
-its lower content is reachable. The cost is that once it locks, everything above
-the viewport height is permanently off-screen.
-
-The services chapter came to 1481px against a 900px viewport, so its title and
-lede were never visible while the chapter was on screen. The fix was a
-two-column layout, not a smaller font.
-
-**Keep every `.panel__inner` at or under 100svh.** Measure it; do not estimate.
-
-*Symptom: a chapter you can read while it scrolls in, and cannot once it stops.*
-
-### The last panel gets no dwell
-
-`.panel:last-child { min-height: 100svh }`. The final panel is `main`'s last
-child, so its sticky range is zero and it cannot pin. Its dwell space would ride
-up the bottom of the screen.
-
-*Symptom: a growing blank band at the bottom before the footer.*
-
-### `.panel__grain` must be sized in percentages
-
-`inset: -14%`, scaling with the panel. A fixed height leaves a taller panel
-short, producing a hard horizontal edge where texture becomes flat colour, which
-slides as the panel settles into its pin. The margin must stay comfortably
-larger than the 5% drift in the keyframes.
+*Symptom: the deck stops stacking and the filters scroll away, with no error.*
 
 ### A media query adds no specificity
 
-`@media (prefers-reduced-motion: reduce) { .panel__grain { animation: none } }`
-loses to `.panel--ink .panel__grain` outside it. **Reduced-motion overrides must
+`@media (prefers-reduced-motion: reduce) { .ticker__track { animation: none } }`
+would lose to a more specific rule outside it. **Reduced-motion overrides must
 repeat the full selector that turned the effect on.**
 
-*Symptom: the grain re-seeds seven times a second for exactly the people who
-asked it not to.*
-
-### Never animate `transform` on the nav indicator
-
-`.navbar__indicator` is centred with `transform: translateY(-50%)`. Animating
-`transform` replaces that outright, dropping it half its height. Animate `left`
-and `width` only; use the `scale` and `translate` longhands if you need an
-independent transform anywhere.
-
-### `place()` must re-run when the labels change, not just the route
-
-The indicator is measured from the active link, and the labels are copy:
-"Shop" and "Boutique" are different widths. `useLayoutEffect` therefore depends
-on `links` as well as on `path`.
-
-*Symptom: the rule under-hangs the word, in one language only.*
+*Symptom: the motion keeps running for exactly the people who asked it not to.*
 
 ### Percentage padding on a flex item resolves against the CONTAINER
 
@@ -183,57 +139,68 @@ both stored as an **index**.
 
 ## 3. Patterns to follow
 
-**One typeface, three weights.** Readex Pro at 300, 400 and 500. Nothing is
-bold. If something needs emphasis, make it larger, uppercase it, or open the
-tracking. Adding a second family or a 700 weight undoes the system.
+**Tokens first.** Every colour, size, radius, space and duration is a token in
+`src/styles/tokens.css`, in three tiers: primitives (`--gold-500`,
+`--ink-900`), semantics (`--bg`, `--fg`, `--fg-muted`, `--accent`, `--line`,
+`--action-bg`), and component knobs (`--btn-h`, `--radius-media`). Components
+read semantics, never primitives and never raw values. To re-skin, change
+primitives; to change corners, change `--radius-media` and `--radius-card`.
 
-**Sharp corners.** `--r` is `0`. The cart badge is the only exception and it is
-documented at the point of use.
+**Surfaces, not themes.** Every section carries `data-surface` (`ink`, `deep`,
+`gold`, `white`, `stone`). The attribute re-declares the semantic tokens for
+its subtree, so a component is correct on any ground without knowing where it
+is. The header reads the same attribute under its midline and wears it, which
+is how it turns from white-on-ink to ink-on-stone as you scroll. A new section
+without `data-surface` leaves the header guessing.
 
-**Hairlines, never shadows.** There is no shadow scale and adding one is a
-change to the design system, not a tweak.
+**The Devorise grammar, in Optical G&S colours.** Display headings are
+uppercase Montserrat 700 through `<Heading>`, which adds the gold full stop
+and colours the `accent` substring from the content file. Actions are pills.
+Photographs and plates have soft corners (the owner asked for no hard edges on
+photos). One gold stage per page at most.
 
-**Every section label is a `<Kicker>`,** which carries the mark. Do not write a
-bare `<p className="kicker">`.
+**One motion idea: focus.** Entrances are focus pulls (blur to sharp), the
+statement on Home and the intro on About come into focus word by word
+(`<FocusText>`), and the hero lens pulls focus between real frames. Do not add
+unrelated entrance styles.
+
+**Every section label is a `<Kicker>`,** which carries the spectacles mark
+(client rule). It sits in the margin column of `.section-grid`, beside the
+heading, not stacked above it.
 
 **No dash as a connector in user-facing copy.** Not the em dash, not the en
 dash, not a double hyphen. This was an explicit client request.
 
 **Copy goes in `src/content/`,** read with `useContent()`. Never hardcode
-user-facing text in a component, and that includes `aria-label`: a screen reader
-is a reader. `fr.js` and `en.js` must stay the same shape down to array lengths;
-a dev-only check warns when they drift.
+user-facing text in a component, and that includes `aria-label`. `fr.js` and
+`en.js` must stay the same shape down to array lengths; a dev-only check warns
+when they drift.
 
 **French punctuation uses a no-break space before `? ! : ;`,** written as the
-`\u00A0` escape and never as the character. An invisible space in a source file
-is deleted by accident and never noticed. The same applies to the `·`
-separator and to `\u202F`, which `Intl` emits in French prices and which Readex
-Pro has no glyph for (`formatPrice` swaps it).
+`\u00A0` escape and never as the character.
 
 **Paths, slugs, filter values and form field names are locale-independent.**
-`/boutique` is `/boutique` in both languages because the router matches the
-path. Only the visible label translates.
 
-**Navigate with `<Link to>`,** never a bare anchor. It handles client-side
-routing, same-page clicks, and external URLs (new tab, `rel="noopener
-noreferrer"`).
+**Navigate with `<Link to>`,** never a bare anchor. The router matches the
+pathname only, so `/boutique?genre=female#frames` renders the shop.
 
 **Scroll-driven effects subscribe to `onFrame` and write through `write()`.**
-Do not start a private `requestAnimationFrame` loop. One loop exists; join it.
+Do not start a private `requestAnimationFrame` loop.
 
 **Stateful UI belongs in the URL.** The shop's filters, sort and page are query
 params: a filter replaces the history entry, a page change pushes one.
 
 **Every animation needs a `prefers-reduced-motion` fallback,** and the override
-must repeat the full selector. See above.
+must repeat the full selector. Anything that moves for more than five seconds
+(ticker, hero lens) has a pause control.
 
-**Every image needs explicit `width` and `height`.** The catalogue photographs
-are all 900x675.
+**Frame photographs sit on white plates** (`--plate`). A few catalogue shots
+are on a grey studio ground; the home rail, hero lens and About plates use
+hand-picked clean cut-outs, listed by image path in each page.
 
-**Destructive actions need an undo window,** not a confirmation dialog. Clearing
-the basket snapshots it and offers it back for eight seconds.
+**Every image needs explicit `width` and `height`.** Frames are 900x675.
 
----
+**Destructive actions need an undo window,** not a confirmation dialog.
 
 ## 4. Security posture
 
@@ -262,14 +229,14 @@ inlined into the public bundle.
 
 ## 5. Do not
 
-- Do not add a second typeface, or a weight above 500.
-- Do not add a border radius to anything structural.
-- Do not add a box-shadow.
+- Do not write a raw colour, size or duration in a component stylesheet; add
+  or use a token.
+- Do not add a section without `data-surface`.
+- Do not add a second typeface.
 - Do not use an em dash, an en dash or a double hyphen in user-facing copy.
-- Do not use uppercase without opening the tracking to match; uppercase at
-  default tracking is the one thing worse than sentence case here.
+- Do not use uppercase without opening the tracking to match, except display
+  headings, which are uppercase at negative tracking by design.
 - Do not invent data the catalogue does not have. Two fields are missing and
   both are handled honestly; see README.
 - Do not use `IntersectionObserver` with `threshold: 0.5` for anything
-  section-sized. A section taller than the viewport never reaches 50% visible,
-  so it never fires.
+  section-sized.

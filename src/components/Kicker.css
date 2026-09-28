@@ -1,49 +1,28 @@
 /*
- * Uppercase, widely tracked, small, quiet.
+ * The section label, with the spectacles mark in front of it (client rule).
  *
- * This is the luxury-automotive label: emphasis comes from tracking and case,
- * never from weight or colour. Bugatti sets its captions at 11px with 2px of
- * tracking, Ferrari its CTA labels at 1.4px; both stay at regular weight.
+ * Set as Devorise sets "Our approach": small, in the margin column beside the
+ * heading, so it reads as a margin note rather than an eyebrow stacked over
+ * the title.
  */
 .kicker {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.85em;
-  margin: 0 0 var(--space-md);
-  font-size: 0.72rem;
-  font-weight: 400;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  line-height: 1;
-  color: var(--gold-ink);
+  gap: var(--space-3);
+  font-size: var(--tag-size);
+  font-weight: var(--tag-weight);
+  letter-spacing: var(--label-tracking);
+  line-height: 1.35;
+  color: var(--fg);
 }
 
 .kicker__mark {
   flex: none;
-  /* The mark's optical centre sits a shade above the cap height of the
-     label beside it. */
-  margin-top: -0.08em;
+  height: var(--tag-mark-h);
+  width: auto;
+  color: var(--accent);
 }
 
 .kicker__text {
-  /* The last letter's tracking pushes a trailing gap that makes a centred
-     kicker look off-centre. */
-  margin-inline-end: -0.22em;
-}
-
-/*
- * No per-surface override here.
- *
- * The gold and deep bands re-declare --gold-ink for their whole subtree (see
- * the surface scopes in index.css), so `color: var(--gold-ink)` above is
- * already correct on both: the brand gold on the deep band, and ink at the
- * alpha gold needs on the gold band.
- *
- * The rules that used to live here set that alpha to 0.62, which is 4.12:1
- * on gold and fails AA. They also shadowed the scope that got it right, so
- * fixing the token had no effect until they were deleted.
- */
-
-.kicker--center {
-  justify-content: center;
+  max-width: 26ch;
 }

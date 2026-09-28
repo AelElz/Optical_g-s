@@ -3,7 +3,7 @@ import { useContent } from '../content'
 import { useReveal } from '../hooks/useReveal'
 import Field from '../components/Field'
 import Footer from '../components/Footer'
-import Kicker from '../components/Kicker'
+import PageHead from '../components/PageHead'
 import { ArrowRight, Minus, Plus } from '../components/Icons'
 import Link from '../components/Link'
 import { useCart } from '../lib/cart-context'
@@ -144,21 +144,14 @@ export default function Panier() {
   if (!items.length) {
     return (
       <div ref={revealRef}>
-        <main id="top" className="page page--light">
+        <main id="top" className="page" data-surface="stone">
+          <PageHead kicker={copy.kicker} title={copy.title} />
           <section className="container cart-empty">
-            <Kicker className="reveal">{copy.kicker}</Kicker>
-            <h1 className="display page__title">
-              <span className="wipe">
-                <span>{copy.title}</span>
-              </span>
-            </h1>
-            <p className="cart-empty__lede reveal" style={{ '--i': 1 }}>
-              {copy.empty}
-            </p>
-            <p className="section-lede reveal" style={{ '--i': 2 }}>
+            <p className="cart-empty__lede reveal">{copy.empty}</p>
+            <p className="lead reveal" style={{ '--i': 1 }}>
               {copy.emptyNote}
             </p>
-            <p className="reveal" style={{ '--i': 3 }}>
+            <p className="reveal" style={{ '--i': 2 }}>
               <Link to="/boutique" className="btn btn--primary">
                 <span>{copy.emptyCta}</span>
                 <ArrowRight className="btn__icon" />
@@ -187,19 +180,10 @@ export default function Panier() {
 
   return (
     <div ref={revealRef}>
-      <main id="top" className="page page--light">
-        <section className="page__head cart-head">
-          <div className="container">
-            <Kicker className="reveal">{copy.kicker}</Kicker>
-            <h1 className="display page__title">
-              <span className="wipe">
-                <span>{copy.title}</span>
-              </span>
-            </h1>
-          </div>
-        </section>
+      <main id="top" className="page" data-surface="stone">
+        <PageHead kicker={copy.kicker} title={copy.title} />
 
-        <section className="container cart-layout">
+        <section className="container page-layout cart-layout">
           <div className="cart-main">
             <ul className="cart-lines">
               {items.map((item, index) => (
@@ -257,7 +241,8 @@ export default function Panier() {
 
             <div className="cart-main__foot">
               <Link to="/boutique" className="link-arrow">
-                {copy.continue}
+                <span>{copy.continue}</span>
+                <ArrowRight size={13} />
               </Link>
               <button type="button" className="cart-clear" onClick={clearWithUndo}>
                 {copy.clear}
@@ -267,6 +252,7 @@ export default function Panier() {
             {/* Checkout */}
             <form
               className="form-card cart-checkout reveal"
+              data-surface="white"
               onSubmit={(event) => submit(event, 'mail')}
               noValidate
             >
@@ -411,7 +397,7 @@ export default function Panier() {
           </div>
 
           {/* Summary */}
-          <aside className="cart-summary reveal" style={{ '--i': 1 }}>
+          <aside className="cart-summary page-aside reveal" data-surface="ink" style={{ '--i': 1 }}>
             <h2 className="cart-summary__title">{copy.summaryTitle}</h2>
 
             <ul className="cart-summary__lines">

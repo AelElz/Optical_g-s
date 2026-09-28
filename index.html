@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#fbfaf8" />
+    <meta name="theme-color" content="#14171a" />
     <title>Optical G&amp;S · Vos yeux méritent le mieux</title>
     <meta
       name="description"
@@ -11,35 +11,20 @@
     />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <!--
-      One typeface, self-hosted, so there is no third party to preconnect to.
-      It is preloaded because the CSS that declares it is itself a request:
-      without this the browser does not learn the font exists until the
-      stylesheet has arrived and parsed.
-    -->
-    <link rel="preload" as="font" type="font/woff2" href="/fonts/ReadexPro.woff2" crossorigin />
-
-    <!--
-      Applied before the first paint, and deliberately before the stylesheet:
-      reading the stored theme from React would leave one frame of the wrong
-      palette on every load, which is the white flash every dark site is
-      judged by. This mirrors apply() in src/lib/theme.jsx.
-    -->
-    <script>
-      ;(function () {
-        try {
-          var stored = localStorage.getItem('opticalgs:theme')
-          if (stored === 'light' || stored === 'dark') {
-            document.documentElement.setAttribute('data-theme', stored)
-          }
-        } catch (e) {
-          /* Safari private mode throws rather than returning null. The
-             system preference is a fine fallback. */
-        }
-      })()
-    </script>
+    <!-- One family, self-hosted. Preloaded because the stylesheet that
+         declares it is itself a request. -->
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/Montserrat.woff2" crossorigin />
   </head>
   <body>
+    <!--
+      DIRECTION CONTRACT
+      THESIS: An optician's showroom told in the Devorise Media grammar: dark ink stages, bold uppercase statements ending on a gold full stop, one full-bleed gold stage, and every frame shown on a white plate with its real measurements. Refuses the beige hairline boutique and the anonymous product grid.
+      OWN-WORLD: Ink #14171A stages, stone and white retail floors, gold #E8C351 as the accent word, the full stop and the lens-ring bullet. Montserrat 500 to 800, display uppercase 700. Square cards and media, pill actions, underline fields.
+      STORY: The visitor sees real designer frames at once, understands a qualified optician in Casablanca stands behind them, shops the catalogue, and orders with cash on delivery.
+      FIRST VIEWPORT: Ink stage. Left: "VOS YEUX MÉRITENT LE MIEUX." at display size, "LE MIEUX" and the stop in gold, lede, gold pill "Voir la boutique" and ghost "Prendre rendez-vous". Right: a white lens plate ringed in gold holding a real frame that pulls focus to the next. Base: a hairline meta row.
+      FORM: Devorise Media language, pinned by the owner (brief-pinned over the roll); raise from the Saville catalogue challenger: the frame reference and its 54□16 142 notation set as typography. Seed c4f69955.
+      FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
+    -->
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

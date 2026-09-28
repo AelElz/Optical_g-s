@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { useContent } from '../content'
-import { useCart } from '../lib/cart-context'
+import { useCartActions } from '../lib/cart-context'
 import { priceLabel } from '../lib/format'
 import { useLocale } from '../lib/locale-context'
 import { freezeBackground } from '../lib/motion'
 import { whatsapp } from '../lib/forms'
 import { Close, Minus, Plus } from './Icons'
 import Link from './Link'
+import Notation from './Notation'
 import './QuickView.css'
 
 /*
@@ -20,7 +21,7 @@ import './QuickView.css'
 export default function QuickView({ product, onClose }) {
   const t = useContent()
   const { locale } = useLocale()
-  const { add } = useCart()
+  const { add } = useCartActions()
   const [quantity, setQuantity] = useState(1)
   const sheetRef = useRef(null)
   const closeRef = useRef(null)
@@ -39,7 +40,6 @@ export default function QuickView({ product, onClose }) {
 
     opener.current = document.activeElement
     freezeBackground(true)
-    document.documentElement.classList.add('is-covered')
 
     /*
      * Focus moves into the sheet, or a keyboard user is still standing in
@@ -82,11 +82,10 @@ export default function QuickView({ product, onClose }) {
       window.clearTimeout(focusTimer)
       window.removeEventListener('keydown', onKey)
       freezeBackground(false)
-      document.documentElement.classList.remove('is-covered')
       /* Give focus back to the card that opened this, not to the top of the
          document: landing at the top of a 500-card grid is worse than not
          restoring focus at all. */
-      opener.current?.focus?.()
+      opener.current?.focus?.({ preventScroll: true })
     }
   }, [open, onClose])
 
@@ -96,12 +95,15 @@ export default function QuickView({ product, onClose }) {
   const soldOut = !product.stock
   const ceiling = Math.max(1, Math.min(10, product.stock || 1))
 
-  const measurements = [product.lens, product.bridge, product.temple].filter(Boolean).join(' · ')
+  const measurements = product.lens && product.bridge
 
   const facts = [
     product.material && [copy.material, product.material],
     product.color && [copy.colour, product.color],
-    measurements && [copy.measurements, measurements],
+    measurements && [
+      copy.measurements,
+      <Notation key="n" product={product} label={copy.measurements} />,
+    ],
   ].filter(Boolean)
 
   const ask = whatsapp(t.shop.whatsapp, [
@@ -120,6 +122,7 @@ export default function QuickView({ product, onClose }) {
 
       <div
         className="quickview__sheet"
+        data-surface="white"
         role="dialog"
         aria-modal="true"
         aria-label={label}

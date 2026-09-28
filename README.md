@@ -13,7 +13,7 @@ npm run build   # dist/
 
 | Route              | What it is                                                        |
 | ------------------ | ----------------------------------------------------------------- |
-| `/`                | Seven scroll-pinned chapters, hero through to the shop teaser      |
+| `/`                | Ink hero with the frame lens, houses ticker, store statement, categories, a buyable rail, the gold services stage and deck, founder and booking, the store |
 | `/boutique`        | 542 frames, filters and sort in the URL, 24 a page, quick view     |
 | `/boutique/panier` | Basket, checkout, cash on delivery, undo on clear                  |
 | `/rendez-vous`     | Booking request, four services, Sunday refused                     |
@@ -27,7 +27,7 @@ than being redirected somewhere they were never asked to go.
 
 React 19, Vite 7, GSAP (the intro only) and Lenis (smooth scroll). No routing
 library, no UI kit, no CSS framework: six routes are a `pathname` in state, and
-the design system is one stylesheet.
+the design system is one token file (`src/styles/tokens.css`) plus base styles.
 
 ```
 src/
@@ -38,54 +38,49 @@ src/
   components/   Navbar, Footer, Panel, Kicker, Logo, ProductCard, QuickView, ...
   pages/        one .jsx and one .css each
 public/
-  fonts/        ReadexPro.woff2
+  fonts/        Montserrat.woff2
   products/     542 frame photographs
   media/        store, founder, category
 ```
 
 ## Design
 
-The reference is the luxury-house set in `awesome-design-md` (Bugatti,
-Ferrari, Lamborghini). What they share is not decoration, it is refusal, and
-the whole system here follows from four of those refusals:
+Redesigned on 2026-09-28 after the Devorise Media site, carried in the Optical
+G&S brand colours (gold `#E8C351`, ink `#14171A`, white). The full record is
+[DESIGN.md](DESIGN.md); the short version:
 
-- **One typeface at modest weights.** Readex Pro, self-hosted, variable,
-  subset to Latin (54 KB). Weights 300, 400 and 500 only. Nothing is bold:
-  emphasis comes from size, case and tracking. Labels, buttons, nav links and
-  kickers are uppercase at `0.2em`; display type is weight 300 with *negative*
-  tracking.
-- **Sharp corners.** `--r: 0`. The only rounded thing on the site is the cart
-  count, where a square would read as a rendering fault.
-- **Hairlines, not shadows.** There is no shadow scale. Depth is photography,
-  rules and empty space.
-- **One accent, used scarcely.** Gold and white each carry about 40% of the
-  surface and ink the remaining 20%, which is also why the site is light by
-  default with at most one ink chapter per page.
+- **Stages and floors.** Home and About open on dark ink stages with bold
+  uppercase Montserrat headlines, a gold accent word and a gold full stop.
+  The shop, cart and forms are light stone and white floors: the same type,
+  buttons and colours, none of the drama, so buying stays fast.
+- **One gold stage per page**, full bleed, handing over to white through
+  bands that close as you scroll.
+- **Pills and soft corners.** Every action is a pill; photographs, frame
+  plates and cards have rounded corners.
+- **The optician's details.** Every frame carries its size as an optician
+  reads it off the temple, `54□16 142`, and the site's motion is a focus pull.
+- **Tokens.** Everything visual lives in `src/styles/tokens.css`, in three
+  tiers (primitives, semantics, components), with per-surface overrides
+  through `data-surface`.
 
 Every section label is a `<Kicker>`, which puts the spectacles mark in front of
-the words. The mark is the brand's own `Logo.svg`, recoloured to `currentColor`
-so one component serves the gold, ink and white surfaces.
+the words (client rule).
 
 **No dash as a connector**, anywhere in the copy: not the em dash, not the en
-dash, not a double hyphen. A comma, a full stop or the middot separator does
-the work, and ranges are written out ("10:00 à 20:00").
+dash, not a double hyphen (client rule).
 
 ## Motion
 
-One `requestAnimationFrame` loop for the whole site, split into a read phase
-and a write phase (`src/lib/motion.js`). Lenis is driven from GSAP's ticker so
-the smoothed position and every scroll-reading effect resolve in the same
-frame. Nothing starts a private rAF loop; effects subscribe to `onFrame` and
-push DOM writes through `write()`.
+One `requestAnimationFrame` loop for the whole site (`src/lib/motion.js`),
+with Lenis driven from GSAP's ticker. Effects subscribe to `onFrame` and push
+DOM writes through `write()`.
 
-The home page is the only surface with a real motion budget: sticky chaptered
-panels, a damped scroll-progress signal (`--p` and `--pd`) driving parallax
-and the frame strip, text wipes, and one ambient float. The shop and the forms
-are utility surfaces and get a staggered enter and nothing else.
-
-Every animated thing has a `prefers-reduced-motion` fallback, and under that
-setting Lenis never starts and `--pd` is pinned to its midpoint so no element
-is left displaced.
+The motion idea is focus: entrances blur to sharp, the store statement and
+the About intro come into focus word by word (`FocusText`), and the hero lens
+pulls focus between real frames. The home page also has the houses ticker,
+slow parallax on the store photographs, the gold bands and the sticky service
+deck. The shop and forms get the entrance and nothing else. Everything has a
+`prefers-reduced-motion` fallback, and the ticker and lens have pause controls.
 
 ## Content
 
@@ -141,15 +136,13 @@ inlined into the public bundle.
 
 ## Fonts
 
-Readex Pro is licensed under the SIL Open Font License, so it ships with the
-site. It was subset from the upstream variable file, which also carries a full
-Arabic set and a second `HEXP` axis that this site does not use.
+Montserrat (SIL Open Font License), variable, self-hosted as
+`public/fonts/Montserrat.woff2`, Latin subset. It is the Devorise Media
+typeface, chosen because the redesign follows that site.
 
-An earlier draft used Midstar for display. It is not in the repository: the
-available file is the personal-use demo, and the demo watermarks live inside
-the glyphs, so every digit, the ampersand and the typographic apostrophe
-render as a small "PERSONAL USE ONLY" badge rather than as the character. That
-is unusable for a shop that prints prices, phone numbers and opening hours.
+The Midstar file in `Design Assest/` is the personal-use demo, whose glyphs
+carry "PERSONAL USE ONLY" watermarks on digits and punctuation, so it is not
+used.
 
 ## Verification
 

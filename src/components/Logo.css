@@ -1,40 +1,20 @@
 .logo {
   display: inline-flex;
   align-items: center;
-  gap: 0.7em;
-  color: inherit;
+  gap: var(--space-3);
+  color: var(--fg);
 }
 
 .logo__mark {
   flex: none;
+  width: auto;
+  color: var(--accent);
 }
 
-/*
- * The wordmark.
- *
- * Regular weight, wide tracking, uppercase. Not bold: in this system weight
- * is never the emphasis, and a bold wordmark next to a fine line-art mark
- * looks like two logos from different brands.
- */
 .logo__word {
-  font-size: 0.78rem;
-  font-weight: 400;
-  letter-spacing: 0.26em;
+  font-size: 0.8125rem;
+  font-weight: var(--weight-black);
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   white-space: nowrap;
-  /* Tracking adds a trailing gap after the last letter, which pushes the
-     lockup off-centre against anything to its right. */
-  margin-inline-end: -0.26em;
-}
-
-@media (max-width: 520px) {
-  .logo {
-    gap: 0.55em;
-  }
-
-  .logo__word {
-    font-size: 0.72rem;
-    letter-spacing: 0.2em;
-    margin-inline-end: -0.2em;
-  }
 }

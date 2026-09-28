@@ -2,17 +2,22 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useContent } from '../content'
 import allProducts from '../data/products.json'
 import { useReveal } from '../hooks/useReveal'
-import { useScrollProgress } from '../hooks/useScrollProgress'
 import Footer from '../components/Footer'
+import Heading from '../components/Heading'
 import Kicker from '../components/Kicker'
 import { ArrowRight, Chevron } from '../components/Icons'
 import Link from '../components/Link'
 import ProductCard from '../components/ProductCard'
 import QuickView from '../components/QuickView'
-import { documentTop, resizeScroll, scrollTo } from '../lib/motion'
+import { resizeScroll, scrollTo } from '../lib/motion'
 import './Boutique.css'
 
 const PER_PAGE = 24
+
+/* Four real frames for the head, one from each of four houses. */
+const HERO_FRAMES = ['/products/gg1862s-1158.webp', '/products/dior-cannage-1154.webp', '/products/b23-514.webp', '/products/mod2274-1151.webp']
+  .map((image) => allProducts.find((product) => product.image === image))
+  .filter(Boolean)
 
 /*
  * The filters live in the query string.
@@ -95,7 +100,6 @@ function matchesGenre(product, genre) {
 export default function Boutique() {
   const t = useContent()
   const revealRef = useReveal()
-  const heroRef = useScrollProgress({ smoothing: 5 })
   const gridTopRef = useRef(null)
 
   const copy = t.boutique
@@ -220,8 +224,7 @@ export default function Boutique() {
      */
     requestAnimationFrame(() => {
       resizeScroll()
-      const anchor = gridTopRef.current
-      if (anchor) window.scrollTo({ top: documentTop(anchor) - 120, behavior: 'auto' })
+      if (gridTopRef.current) scrollTo(gridTopRef.current)
     })
   }
 
@@ -236,39 +239,32 @@ export default function Boutique() {
   return (
     <div ref={revealRef}>
       <main id="top" className="shop">
-        {/* Hero. Gold, because the shop is the accent's home. */}
-        <section className="shop-hero" ref={heroRef}>
-          <div className="container shop-hero__inner">
+        {/* Head: the ink stage, the offer, and four real frames on plates. */}
+        <section className="shop-hero" data-surface="ink">
+          <div className="container shop-hero__grid">
             <div className="shop-hero__copy">
-              <p className="shop-hero__badge label reveal">{copy.hero.badge}</p>
-              <h1 className="display shop-hero__title">
-                <span className="wipe">
-                  <span>{copy.hero.title}</span>
-                </span>
-              </h1>
-              <span className="rule shop-hero__rule" aria-hidden="true" />
-              <p className="section-lede reveal" style={{ '--i': 1 }}>
+              <p className="shop-hero__badge reveal">{copy.hero.badge}</p>
+              <Heading
+                as="h1"
+                className="h1 shop-hero__title"
+                text={copy.hero.title}
+                accent={copy.hero.accent}
+              />
+              <p className="lead reveal" style={{ '--i': 1 }}>
                 {copy.hero.lede}
               </p>
               <p className="reveal" style={{ '--i': 2 }}>
-                <Link to="/boutique#frames" className="btn btn--primary shop-hero__cta">
+                <Link to="/boutique#frames" className="btn btn--primary">
                   <span>{copy.hero.cta}</span>
                   <ArrowRight className="btn__icon" />
                 </Link>
               </p>
             </div>
 
-            <div className="shop-hero__strip" aria-hidden="true">
-              {allProducts.slice(0, 4).map((product, index) => (
-                <span className="shop-hero__tile" key={product.id} style={{ '--i': index }}>
-                  <img
-                    src={product.image}
-                    alt=""
-                    width="900"
-                    height="675"
-                    loading="eager"
-                    decoding="async"
-                  />
+            <div className="shop-hero__plates" aria-hidden="true">
+              {HERO_FRAMES.map((product, index) => (
+                <span className="shop-hero__plate reveal" key={product.id} style={{ '--i': index }}>
+                  <img src={product.image} alt="" width="900" height="675" decoding="async" />
                 </span>
               ))}
             </div>
@@ -276,25 +272,25 @@ export default function Boutique() {
         </section>
 
         {/* Categories */}
-        <section className="cats">
+        <section className="shop-cats" data-surface="white">
           <div className="container">
-            <Kicker className="reveal">{copy.categories.kicker}</Kicker>
-            <h2 className="cats__title section-title wipe">
-              <span>{copy.categories.title}</span>
-            </h2>
+            <div className="section-grid shop-cats__head">
+              <Kicker className="reveal">{copy.categories.kicker}</Kicker>
+              <Heading className="h2" text={copy.categories.title} />
+            </div>
 
-            <ul className="cats__grid">
+            <ul className="shop-cats__grid">
               {copy.categories.items.map((category, index) => (
                 /* Keyed on `key`, which is locale-independent, never on the
                    label: the label is copy, and keying on it remounts every
                    tile on a language switch. */
-                <li key={category.key} className="reveal" style={{ '--i': index % 3 }}>
+                <li key={category.key} className="reveal" style={{ '--i': index % 6 }}>
                   <button
                     type="button"
-                    className="cats__tile"
+                    className="shop-cats__tile"
                     onClick={() => applyCategory(category)}
                   >
-                    <span className="cats__media">
+                    <span className="shop-cats__media">
                       <img
                         src={`/media/cat-${category.key}.webp`}
                         alt=""
@@ -304,9 +300,9 @@ export default function Boutique() {
                         decoding="async"
                       />
                     </span>
-                    <span className="cats__label">
-                      {category.label}
-                      <ArrowRight size={15} />
+                    <span className="shop-cats__label">
+                      <span>{category.label}</span>
+                      <ArrowRight size={14} />
                     </span>
                   </button>
                 </li>
@@ -316,9 +312,9 @@ export default function Boutique() {
         </section>
 
         {/* Filters and grid */}
-        <section className="frames" id="frames" ref={gridTopRef}>
-          <div className="container">
-            <div className="filters">
+        <section className="frames" id="frames" data-surface="stone" ref={gridTopRef}>
+          <div className="filters">
+            <div className="container filters__inner">
               <FilterGroup
                 label={copy.filters.genreLabel}
                 options={copy.filters.genre}
@@ -349,21 +345,19 @@ export default function Boutique() {
                   ))}
                 </select>
               </div>
+            </div>
+          </div>
 
-              <div className="filters__meta">
-                <span className="filters__count" aria-live="polite">
-                  {copy.filters.results(filtered.length)}
-                </span>
-                {dirty && (
-                  <button
-                    type="button"
-                    className="filters__reset"
-                    onClick={() => update(DEFAULTS)}
-                  >
-                    {copy.filters.reset}
-                  </button>
-                )}
-              </div>
+          <div className="container">
+            <div className="frames__meta">
+              <span className="frames__count tnum" aria-live="polite">
+                {copy.filters.results(filtered.length)}
+              </span>
+              {dirty && (
+                <button type="button" className="frames__reset" onClick={() => update(DEFAULTS)}>
+                  {copy.filters.reset}
+                </button>
+              )}
             </div>
 
             {visible.length === 0 ? (

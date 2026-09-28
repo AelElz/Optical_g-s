@@ -1,17 +1,25 @@
 .notfound {
   display: flex;
+  align-items: center;
+  min-height: 100svh;
+  padding-block: calc(var(--header-h) + var(--space-12)) var(--space-16);
+}
+
+.notfound__inner {
+  display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding-top: clamp(40px, 8vh, 90px);
+  gap: var(--space-6);
+}
+
+.notfound__mark {
+  width: auto;
+  height: clamp(64px, 10vw, 120px);
+  color: var(--accent);
+  filter: blur(6px);
+  opacity: 0.8;
 }
 
 .notfound__title {
-  max-width: 14ch;
-}
-
-.notfound__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-sm);
-  margin-top: clamp(28px, 3.4vw, 42px);
+  max-width: 12ch;
 }

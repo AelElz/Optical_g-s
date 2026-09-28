@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import products from '../data/products.json'
-import { CartContext } from './cart-context'
+import { CartActionsContext, CartStateContext } from './cart-context'
 import { readJSON, writeJSON } from './storage'
 
 /*
@@ -97,7 +97,12 @@ export function CartProvider({ children }) {
    */
   const restore = useCallback((previous) => setLines(sanitise(previous)), [])
 
-  const value = useMemo(() => {
+  const actions = useMemo(
+    () => ({ add, setQuantity, remove, clear, restore }),
+    [add, setQuantity, remove, clear, restore],
+  )
+
+  const state = useMemo(() => {
     /* Joined to the catalogue on read, so the rest of the app never has to
        think about a line whose product no longer exists. */
     const items = lines
@@ -111,14 +116,13 @@ export function CartProvider({ children }) {
       items,
       count: items.reduce((total, item) => total + item.quantity, 0),
       subtotal: items.reduce((total, item) => total + item.price * item.quantity, 0),
-      add,
-      setQuantity,
-      remove,
-      clear,
-      restore,
       lines,
     }
-  }, [lines, add, setQuantity, remove, clear, restore])
+  }, [lines])
 
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>
+  return (
+    <CartActionsContext.Provider value={actions}>
+      <CartStateContext.Provider value={state}>{children}</CartStateContext.Provider>
+    </CartActionsContext.Provider>
+  )
 }

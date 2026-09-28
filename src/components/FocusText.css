@@ -1,0 +1,35 @@
+.focus-text {
+  --focus: 0;
+  font-size: var(--size-statement);
+  font-weight: var(--weight-semibold);
+  line-height: 1.22;
+  letter-spacing: var(--tracking-heading);
+  text-wrap: pretty;
+}
+
+.focus-text__words {
+  /* Copying the statement copies the hidden sentence once, not the words. */
+  user-select: none;
+}
+
+/*
+ * Each word's distance from the focus front, 0 (in focus) to 1 (far). The
+ * front sweeps from before the first word to past the last as --focus runs
+ * 0 to 1; three words either side of it are mid-pull.
+ */
+.focus-text__word {
+  --d: clamp(0, (var(--w) - var(--focus) * (var(--count) + 3)) / 3 + 1, 1);
+  filter: blur(calc(var(--d) * 7px));
+  opacity: calc(1 - var(--d) * 0.78);
+  transition:
+    filter 180ms linear,
+    opacity 180ms linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .focus-text .focus-text__word {
+    filter: none;
+    opacity: 1;
+    transition: none;
+  }
+}

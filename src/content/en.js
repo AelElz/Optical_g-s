@@ -65,8 +65,6 @@ export default {
     menu: 'Menu',
     close: 'Close',
     home: 'Optical G&S, back to home',
-    themeToDark: 'Switch to dark theme',
-    themeToLight: 'Switch to light theme',
     langLabel: 'Language',
     skip: 'Skip to content',
   },
@@ -77,6 +75,9 @@ export default {
     hero: {
       kicker: `Qualified optician${dot}Casablanca`,
       title: 'Your eyes deserve the best',
+      accent: 'the best',
+      pause: 'Pause the slideshow',
+      play: 'Play the slideshow',
       lede:
         'Eye exams, designer frames and contact lenses, in a shop that takes the time to advise you properly.',
       primary: 'Book an appointment',
@@ -155,6 +156,7 @@ export default {
     hero: {
       badge: 'Up to 30% off',
       title: 'Eyewear for men & women',
+      accent: '&',
       lede: 'Unbeatable prices. Delivered across Morocco.',
       cta: 'Browse the frames',
     },

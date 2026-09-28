@@ -1,480 +1,383 @@
 /*
- * The nav is the only translucent surface on the site.
- *
- * Every reference system uses glass on chrome that floats over content and on
- * nothing else. Every card below this is solid.
+ * The header wears the surface of the section beneath it (see surfaceAt in
+ * Navbar.jsx), so every colour below is a semantic token and flips on its
+ * own. Transparent at the top of a page, solid once the page moves, as the
+ * catalogue scrolls under it.
  */
-
-.navbar {
+.header {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 90;
-  color: var(--ink);
-}
-
-/* The announcement strip */
-
-/*
- * Folds by animating grid-template-rows rather than height, so the row
- * collapses from its own measured size without that size being hardcoded
- * anywhere. A max-height guess would either clip the text on a narrow phone
- * or leave a gap on a wide screen.
- */
-.navbar__strip {
-  display: grid;
-  grid-template-rows: 1fr;
-  background: var(--deep);
-  color: var(--white-muted);
-  transition: grid-template-rows 0.55s var(--ease-out);
-}
-
-.navbar.is-condensed .navbar__strip {
-  grid-template-rows: 0fr;
-}
-
-.navbar__strip-inner {
-  overflow: hidden;
-  padding-inline: var(--pad-x);
-  font-size: 0.68rem;
-  font-weight: var(--w-regular);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  line-height: 1;
-  text-align: center;
-}
-
-/* Padding lives on pseudo-elements so the row can collapse to nothing. */
-.navbar__strip-inner::before,
-.navbar__strip-inner::after {
-  content: '';
-  display: block;
-  height: 11px;
-}
-
-/* The bar */
-
-.navbar__bar {
-  background: var(--glass);
-  border-bottom: 1px solid transparent;
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
-  backdrop-filter: blur(20px) saturate(1.4);
+  inset: 0 0 auto;
+  z-index: var(--z-header);
+  height: var(--header-h);
+  color: var(--fg);
   transition:
-    background-color 0.45s var(--ease-out),
-    border-color 0.45s var(--ease-out);
+    background-color var(--dur-base) var(--ease-out),
+    color var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out);
 }
 
-.navbar.is-condensed .navbar__bar {
-  background: var(--glass-solid);
-  border-bottom-color: var(--line);
+.header:not(.is-condensed) {
+  background: transparent;
 }
 
-/*
- * Reduce Transparency is an accessibility setting, not a preference to be
- * second-guessed. When it is on, the glass becomes an opaque surface.
- */
-@media (prefers-reduced-transparency: reduce) {
-  .navbar__bar,
-  .navbar.is-condensed .navbar__bar {
-    background: var(--surface);
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-    border-bottom-color: var(--line);
-  }
+.header.is-condensed {
+  box-shadow: 0 1px 0 var(--line);
 }
 
-.navbar__inner {
-  width: min(var(--container), 100% - 2 * var(--pad-x));
-  margin-inline: auto;
+html.is-covered .header {
+  background: transparent;
+  box-shadow: none;
+}
+
+.header__inner {
   display: flex;
   align-items: center;
-  gap: clamp(12px, 2vw, 32px);
-  height: var(--nav-h);
-  transition: height 0.45s var(--ease-out);
+  gap: var(--space-6);
+  height: 100%;
 }
 
-.navbar.is-condensed .navbar__inner {
-  height: 60px;
+.header__logo {
+  display: inline-flex;
+  padding-block: var(--space-2);
+  margin-right: auto;
 }
 
-.navbar__logo {
-  flex: none;
-  margin-inline-end: auto;
-}
+/* Links */
 
-/* Links and the underline */
-
-.navbar__nav {
-  display: none;
-}
-
-@media (min-width: 1100px) {
-  .navbar__nav {
-    display: block;
-  }
-}
-
-.navbar__list {
-  position: relative;
+.header__list {
   display: flex;
-  align-items: center;
-  gap: clamp(4px, 1.2vw, 18px);
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  gap: clamp(18px, 2.2vw, 34px);
 }
 
-.navbar__link {
+.header__link {
   position: relative;
-  z-index: 1;
   display: inline-flex;
   align-items: center;
-  height: 40px;
-  padding-inline: 4px;
-  font-size: var(--fs-label);
-  font-weight: var(--w-regular);
-  letter-spacing: var(--track-label);
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: var(--ink-muted);
-  transition: color 0.4s var(--ease-out);
+  gap: var(--space-2);
+  padding-block: var(--space-3);
+  font-size: var(--label-size);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--label-tracking);
+  text-transform: var(--label-case);
+  color: var(--fg);
+  opacity: 0.78;
+  transition: opacity var(--dur-fast) var(--ease-out);
 }
 
-/* Tracking leaves a gap after the last letter, which throws the measurement
-   the indicator takes from this element. */
-.navbar__link {
-  padding-inline-end: calc(4px + var(--track-label));
+.header__link:hover,
+.header__link[data-active='true'] {
+  opacity: 1;
 }
 
-.navbar__link:hover {
-  color: var(--ink);
+/* The current page carries the gold full stop, as every heading does. */
+.header__link[data-active='true']::after {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
 }
 
-.navbar__link[data-active='true'] {
-  color: var(--ink);
-}
+/* Actions */
 
-/*
- * A hairline under the active link, not a filled pill.
- *
- * The pill was the single most app-looking element on the page. A rule is
- * what a printed contents page uses, and it is also the only thing here thin
- * enough not to compete with the wordmark.
- *
- * Centred vertically with translateY(-50%), so only `left` and `width` are
- * ever transitioned: animating `transform` would replace that centring
- * outright and the rule would drop half its own height mid-flight.
- */
-.navbar__indicator {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 0;
-  height: 1px;
-  margin-top: 13px;
-  transform: translateY(-50%);
-  background: var(--ink);
-  opacity: 0;
-  pointer-events: none;
-  transition:
-    left 0.55s var(--ease-out),
-    width 0.55s var(--ease-out),
-    opacity 0.3s var(--ease-out);
-}
-
-/* Right-hand actions */
-
-.navbar__actions {
+.header__actions {
   display: flex;
   align-items: center;
-  gap: clamp(4px, 1vw, 10px);
-  flex: none;
+  gap: var(--space-4);
 }
 
-.navbar__lang {
-  display: none;
-  align-items: center;
-  gap: 2px;
+.lang {
+  display: inline-flex;
+  gap: var(--space-1);
 }
 
-@media (min-width: 700px) {
-  .navbar__lang {
-    display: flex;
-  }
-}
-
-.navbar__lang-btn {
+.lang__btn {
   min-width: 34px;
-  height: 40px;
-  padding-inline: 6px;
-  border: 0;
-  background: transparent;
-  font-size: var(--fs-label);
-  font-weight: var(--w-regular);
-  letter-spacing: 0.12em;
-  color: var(--ink-muted);
-  transition: color 0.35s var(--ease-out);
+  min-height: 34px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-action);
+  font-size: var(--size-micro);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.1em;
+  color: var(--fg-muted);
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
 }
 
-.navbar__lang-btn:hover {
-  color: var(--ink);
+.lang__btn:hover {
+  color: var(--fg);
 }
 
-/* The active language is marked by a rule under it, the same device the nav
-   uses, rather than by a filled chip. */
-.navbar__lang-btn[data-active='true'] {
-  color: var(--ink);
-  box-shadow: inset 0 -1px 0 0 var(--ink);
+.lang__btn[data-active='true'] {
+  background: var(--ghost-hover);
+  color: var(--fg);
 }
 
-.navbar__cart {
+.header__cart {
   position: relative;
   display: grid;
   place-items: center;
-  /* 44px, the minimum comfortable target. */
   width: 44px;
   height: 44px;
-  color: var(--ink);
-  transition: color 0.3s var(--ease-out);
+  border-radius: 50%;
+  transition: background-color var(--dur-fast) var(--ease-out);
 }
 
-.navbar__cart:hover {
-  color: var(--gold-ink);
+.header__cart:hover {
+  background: var(--ghost-hover);
 }
 
-/*
- * The one round thing in the interface.
- *
- * A count badge is read as a dot with a number in it; squared off at this
- * size it reads as a rendering fault rather than as a choice.
- */
-.navbar__badge {
+.header__badge {
   position: absolute;
-  top: 7px;
-  right: 4px;
-  min-width: 16px;
-  height: 16px;
-  padding-inline: 4px;
+  top: 4px;
+  right: 2px;
   display: grid;
   place-items: center;
-  border-radius: var(--r-pill);
-  background: var(--invert);
-  color: var(--invert-text);
-  font-size: 0.6rem;
-  font-weight: var(--w-medium);
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--radius-pill);
+  background: var(--gold-500);
+  color: var(--ink-900);
+  font-size: 0.6875rem;
+  font-weight: var(--weight-black);
   line-height: 1;
-  font-variant-numeric: tabular-nums;
 }
 
-.navbar__cta {
+/* Burger: two lines, as Devorise draws it. */
+.header__burger {
   display: none;
-  min-height: 42px;
-  padding-inline: var(--space-md);
-}
-
-@media (min-width: 880px) {
-  .navbar__cta {
-    display: inline-flex;
-  }
-}
-
-/* Burger */
-
-.navbar__burger {
-  display: grid;
   place-items: center;
   width: 44px;
   height: 44px;
-  border: 0;
-  background: transparent;
+  margin-right: -10px;
 }
 
-@media (min-width: 1100px) {
-  .navbar__burger {
-    display: none;
-  }
-}
-
-.navbar__burger-box {
+.header__burger-lines {
   position: relative;
   display: block;
-  width: 22px;
-  height: 11px;
+  width: 24px;
+  height: 10px;
 }
 
-.navbar__burger-box span {
+.header__burger-lines > span {
   position: absolute;
   left: 0;
   width: 100%;
-  height: 1px;
-  background: var(--ink);
-  /* rotate and translate longhands, not the transform shorthand: they
-     compose, so the cross does not have to restate the offset. */
+  height: 2px;
+  background: currentColor;
   transition:
-    top 0.35s var(--ease-out),
-    rotate 0.35s var(--ease-out);
+    top var(--dur-base) var(--ease-out),
+    rotate var(--dur-base) var(--ease-out);
 }
 
-.navbar__burger-box span:first-child {
+.header__burger-lines > span:first-child {
   top: 0;
 }
 
-.navbar__burger-box span:last-child {
-  top: 10px;
+.header__burger-lines > span:last-child {
+  top: 8px;
 }
 
-.navbar__burger-box[data-open='true'] span:first-child {
-  top: 5px;
+.header__burger-lines[data-open='true'] > span {
+  top: 4px;
+}
+
+.header__burger-lines[data-open='true'] > span:first-child {
   rotate: 45deg;
 }
 
-.navbar__burger-box[data-open='true'] span:last-child {
-  top: 5px;
+.header__burger-lines[data-open='true'] > span:last-child {
   rotate: -45deg;
 }
 
-/* Full-screen menu */
+html.is-covered .header__burger {
+  color: var(--white);
+}
+
+@media (max-width: 1080px) {
+  .header__nav,
+  .header__lang {
+    display: none;
+  }
+
+  .header__burger {
+    display: grid;
+  }
+}
+
+@media (max-width: 560px) {
+  .header__cta {
+    display: none;
+  }
+
+  .header__actions {
+    gap: var(--space-2);
+  }
+}
+
+/* ===================================================================
+ * The menu room
+ * =================================================================== */
 
 .menu {
   position: fixed;
   inset: 0;
-  z-index: 120;
-  background: var(--deep);
-  color: var(--on-dark);
-  /*
-   * clip-path, not opacity or a translate. The sheet wipes down from the top
-   * edge, which reads as a surface arriving rather than a rectangle fading in,
-   * and it composites without repainting the text underneath.
-   */
-  clip-path: inset(0 0 100% 0);
-  transition: clip-path 0.7s var(--ease-out);
+  z-index: var(--z-menu);
+  display: flex;
+  overflow-y: auto;
+  padding-top: var(--header-h);
+  background:
+    radial-gradient(60% 50% at 88% 110%, rgba(232, 195, 81, 0.14), transparent 70%),
+    var(--bg);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--dur-slow) var(--ease-out),
+    visibility 0s linear var(--dur-slow);
 }
 
 .menu[data-open='true'] {
-  clip-path: inset(0 0 0 0);
+  opacity: 1;
+  visibility: visible;
+  transition: opacity var(--dur-slow) var(--ease-out);
+}
+
+/* The header sits above the room so the burger can close it. */
+html.is-covered .header {
+  z-index: calc(var(--z-menu) + 1);
+  color: var(--white);
+}
+
+html.is-covered .header .logo {
+  color: var(--white);
 }
 
 .menu__inner {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  padding: clamp(20px, 5vw, 44px) var(--pad-x) clamp(28px, 6vh, 56px);
-}
-
-.menu__close {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75em;
-  align-self: flex-end;
-  min-height: 44px;
-  padding-inline: var(--space-md);
-  border: 1px solid var(--line-dark);
-  background: transparent;
-  color: var(--on-dark);
-  font-size: var(--fs-label);
-  letter-spacing: var(--track-label);
-  text-transform: uppercase;
+  justify-content: space-between;
+  gap: var(--space-12);
+  padding-block: var(--space-10) var(--space-12);
 }
 
 .menu__list {
-  flex: 1;
+  position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  gap: var(--space-1);
+  padding-left: var(--space-8);
 }
 
-.menu__list li {
-  overflow: hidden;
-  border-bottom: 1px solid var(--line-dark-soft);
+/* The dotted rail. */
+.menu__list::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 0.6em;
+  bottom: 0.6em;
+  width: 2px;
+  background-image: radial-gradient(circle, var(--ink-600) 1px, transparent 1.4px);
+  background-size: 2px 8px;
 }
 
 .menu__link {
-  display: block;
-  padding-block: clamp(12px, 2vh, 20px);
-  font-size: clamp(1.5rem, 6vw, 2.6rem);
-  font-weight: var(--w-light);
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-  color: var(--white-body);
-  translate: 0 105%;
-  transition:
-    translate 0.65s var(--ease-out),
-    color 0.3s var(--ease-out);
-  transition-delay: calc(var(--i, 0) * 55ms), 0s;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-block: var(--space-1);
+  font-size: clamp(2.2rem, 9vw, 4.25rem);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-display);
+  line-height: 1.08;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  transition: color var(--dur-base) var(--ease-out);
 }
 
-.menu[data-open='true'] .menu__link {
+.menu__link:hover,
+.menu__link[data-active='true'] {
+  color: var(--fg);
+}
+
+.menu__point {
+  position: absolute;
+  left: calc(var(--space-8) * -1);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--ink-600);
+  transition:
+    background-color var(--dur-base) var(--ease-out),
+    scale var(--dur-base) var(--ease-out);
+}
+
+.menu__link[data-active='true'] .menu__point,
+.menu__link:hover .menu__point {
+  background: var(--accent);
+  scale: 1.3;
+}
+
+.menu__label {
+  display: inline-block;
+  opacity: 0;
+  translate: 0 60%;
+  transition:
+    opacity var(--dur-slow) var(--ease-out),
+    translate var(--dur-slow) var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 60ms + 80ms);
+}
+
+.menu[data-open='true'] .menu__label {
+  opacity: 1;
   translate: 0 0;
 }
 
-.menu__link[data-active='true'],
-.menu__link:hover {
-  color: var(--gold);
+.menu__link[data-active='true'] .menu__label::after {
+  content: '.';
+  color: var(--accent);
 }
 
 .menu__foot {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-sm) var(--space-md);
-  padding-top: clamp(20px, 4vh, 34px);
+  gap: var(--space-4) var(--space-6);
+  padding-top: var(--space-6);
+  border-top: var(--border-hair) solid var(--line);
 }
 
-.menu__phone {
+.menu__cart {
   display: inline-flex;
   align-items: center;
-  /* A phone number on a phone. 44px, not the 24px minimum. */
-  min-height: 44px;
-  font-size: var(--fs-label);
-  letter-spacing: var(--track-label);
-  color: var(--white-body);
-  font-variant-numeric: tabular-nums;
+  gap: var(--space-2);
+  font-weight: var(--weight-bold);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .navbar__strip,
-  .navbar__bar,
-  .navbar__inner,
-  .navbar__indicator,
-  .navbar__link,
-  .navbar__lang-btn,
-  .navbar__cart,
-  .navbar__burger-box span,
-  .menu,
-  .menu__link {
-    transition: none;
+.menu__note {
+  flex-basis: 100%;
+  font-size: var(--size-small);
+  color: var(--fg-muted);
+}
+
+@media (min-width: 1081px) {
+  .menu {
+    display: none;
   }
 }
 
-/*
- * The theme control.
- *
- * Same size and weight as the cart beside it, because they are peers: two
- * quiet icon buttons at the end of the bar. It gets no active state, since
- * the icon already says which theme is in force.
- */
-.navbar__theme {
-  display: grid;
-  place-items: center;
-  /* 44px, the minimum comfortable target. */
-  width: 44px;
-  height: 44px;
-  border: 0;
-  background: transparent;
-  color: var(--ink);
-  transition: color 0.3s var(--ease-out);
-}
-
-.navbar__theme:hover {
-  color: var(--gold-ink);
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .navbar__theme {
+  .menu .menu__label {
+    opacity: 1;
+    translate: none;
+    transition: none;
+  }
+
+  .menu,
+  .menu[data-open='true'],
+  .header,
+  .header__burger-lines > span {
     transition: none;
   }
 }

@@ -1,0 +1,125 @@
+.lens {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+  width: 100%;
+}
+
+.lens__stage {
+  position: relative;
+  width: min(100%, 520px);
+  aspect-ratio: 1;
+}
+
+/* The logo's right lens, drawn twice around the plate. The outer ring turns
+   slowly; the inner one holds still, so the pair reads as a lens being set. */
+.lens__ring {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.lens__ring--outer {
+  inset: -3.5%;
+  border: 2px dashed rgba(232, 195, 81, 0.42);
+  animation: lens-turn 60s linear infinite;
+}
+
+.lens__ring--inner {
+  inset: 0;
+  border: clamp(6px, 1.3vw, 11px) solid var(--lens-ring);
+}
+
+.lens__plate {
+  position: absolute;
+  inset: clamp(6px, 1.3vw, 11px);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--plate);
+}
+
+.lens__frame {
+  grid-area: 1 / 1;
+  width: 94%;
+  height: auto;
+  opacity: 0;
+  filter: blur(var(--focus-blur));
+  scale: 1.06;
+  transition:
+    opacity var(--dur-slow) var(--ease-out),
+    filter var(--dur-slow) var(--ease-out),
+    scale var(--dur-reveal) var(--ease-out);
+}
+
+.lens__frame[data-active='true'] {
+  opacity: 1;
+  filter: none;
+  scale: 1;
+}
+
+.lens__caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2) var(--space-4);
+  text-align: center;
+}
+
+.lens__label {
+  flex-basis: 100%;
+  font-size: var(--label-size);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--label-tracking);
+  text-transform: var(--label-case);
+  color: var(--fg-muted);
+}
+
+.lens__name {
+  font-weight: var(--weight-semibold);
+}
+
+.lens__brand {
+  font-weight: var(--weight-black);
+  letter-spacing: var(--label-tracking);
+  text-transform: var(--label-case);
+}
+
+.lens__notation {
+  font-size: var(--size-small);
+  color: var(--accent-text);
+}
+
+.lens__toggle {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: var(--border-hair) solid var(--ghost-line);
+  border-radius: 50%;
+  transition: border-color var(--dur-fast) var(--ease-out);
+}
+
+.lens__toggle:hover {
+  border-color: var(--fg);
+}
+
+@keyframes lens-turn {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lens .lens__ring--outer {
+    animation: none;
+  }
+
+  .lens .lens__frame {
+    transition: none;
+  }
+}

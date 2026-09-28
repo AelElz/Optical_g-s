@@ -200,7 +200,7 @@ export { documentTop }
  * Pass history: true for user-initiated navigation, so each chapter becomes a
  * real history entry and Back walks through them.
  */
-export function scrollTo(target, { immediate = true, history: push = false } = {}) {
+export function scrollTo(target, { immediate = true, history: push = false, offset } = {}) {
   const hash = typeof target === 'string' ? target : `#${target.id}`
   const element = typeof target === 'string' ? document.querySelector(target) : target
   if (!element) return
@@ -209,7 +209,12 @@ export function scrollTo(target, { immediate = true, history: push = false } = {
     window.history.pushState(null, '', hash)
   }
 
-  const y = documentTop(element)
+  /*
+   * The header is fixed over the top of the page, so a target lands below
+   * it rather than behind it unless the caller asks otherwise.
+   */
+  const clearance = offset ?? document.querySelector('.header')?.offsetHeight ?? 0
+  const y = Math.max(0, documentTop(element) - clearance)
 
   if (lenis) {
     /*
@@ -273,7 +278,8 @@ export function initHistoryNav() {
     if (element) {
       scrollTo(hash)
       // Settled once we are where the element says it is.
-      if (Math.abs(window.scrollY - documentTop(element)) < 2) return
+      const clearance = document.querySelector('.header')?.offsetHeight ?? 0
+      if (Math.abs(window.scrollY - Math.max(0, documentTop(element) - clearance)) < 2) return
     }
 
     if (frames < LANDING_FRAMES) {

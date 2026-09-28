@@ -7,8 +7,8 @@ import './Preloader.css'
 /*
  * The intro.
  *
- * A gold field with the mark drawing itself, then a wipe up to reveal the
- * page. It runs once per session, not once per navigation: seeing it again
+ * The ink stage, the gold mark drawing its right lens and the name pulling
+ * into focus, then a wipe up to reveal the page. It runs once per session, not once per navigation: seeing it again
  * on the way back from the cart would be an irritation, not a flourish.
  */
 
@@ -64,17 +64,21 @@ export default function Preloader() {
        * the initial states get applied after the animations they were meant
        * to precede and the mark snaps back to its start pose at the finish.
        */
-      timeline.set(['.preloader__mark', '.preloader__word'], { opacity: 0, y: 14 }, 0)
-      timeline.set('.preloader__sweep', { scaleX: 0 }, 0)
+      timeline.set('.preloader__mark', { opacity: 0, scale: 0.92 }, 0)
+      timeline.set('.preloader__word', { opacity: 0, filter: 'blur(10px)' }, 0)
 
       timeline
-        .to('.preloader__mark', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, 0.15)
-        .to('.preloader__word', { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 0.35)
-        .to('.preloader__sweep', { scaleX: 1, duration: 0.85, ease: 'power2.inOut' }, 0.5)
+        .to('.preloader__mark', { opacity: 1, scale: 1, duration: 0.7, ease: 'power3.out' }, 0.1)
+        .to(
+          '.preloader__mark circle',
+          { strokeDashoffset: 0, duration: 0.9, ease: 'power2.inOut' },
+          0.2,
+        )
+        .to('.preloader__word', { opacity: 1, filter: 'blur(0px)', duration: 0.7, ease: 'power2.out' }, 0.55)
         .to(
           rootRef.current,
           { clipPath: 'inset(0 0 100% 0)', duration: 0.85, ease: 'power3.inOut' },
-          1.15,
+          1.35,
         )
     }, rootRef)
 
@@ -82,7 +86,7 @@ export default function Preloader() {
      * GSAP runs on requestAnimationFrame, which is suspended entirely while
      * the tab is in the background. Someone who opens the site in a
      * background tab and comes back to it several minutes later would
-     * otherwise find a page permanently covered by a gold rectangle, with no
+     * otherwise find a page permanently covered by the intro, with no
      * error anywhere to explain it.
      *
      * setTimeout keeps running when rAF does not, so it is the escape hatch.
@@ -102,9 +106,6 @@ export default function Preloader() {
       <div className="preloader__center">
         <Mark height={54} className="preloader__mark" />
         <span className="preloader__word">Optical G&amp;S</span>
-        <span className="preloader__rule">
-          <span className="preloader__sweep" />
-        </span>
       </div>
     </div>
   )

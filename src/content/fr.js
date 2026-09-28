@@ -76,8 +76,6 @@ export default {
     menu: 'Menu',
     close: 'Fermer',
     home: "Optical G&S, retour à l'accueil",
-    themeToDark: 'Passer au thème sombre',
-    themeToLight: 'Passer au thème clair',
     langLabel: 'Langue',
     skip: 'Aller au contenu',
   },
@@ -88,6 +86,9 @@ export default {
     hero: {
       kicker: `Opticienne diplômée${dot}Casablanca`,
       title: 'Vos yeux méritent le mieux',
+      accent: 'le mieux',
+      pause: 'Mettre en pause le défilement',
+      play: 'Relancer le défilement',
       lede:
         "Examen de la vue, montures de créateurs et lentilles de contact, dans un magasin où l'on prend le temps de vous conseiller.",
       primary: 'Prendre rendez-vous',
@@ -169,6 +170,7 @@ export default {
     hero: {
       badge: "Jusqu'à 30% de remise",
       title: 'Lunettes homme & femme',
+      accent: '&',
       lede: 'Des prix imbattables. Livraison partout au Maroc.',
       cta: 'Voir les montures',
     },

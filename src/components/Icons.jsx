@@ -212,22 +212,27 @@ export function WhatsApp({ size = 18, ...rest }) {
   )
 }
 
-export function Sun({ size = 17, ...rest }) {
+export function Pause({ size = 14, ...rest }) {
   return (
     <svg {...base} viewBox="0 0 20 20" width={size} height={size} {...rest}>
-      <circle cx="10" cy="10" r="3.6" {...stroke} />
-      <path
-        d="M10 1.6v2.1M10 16.3v2.1M18.4 10h-2.1M3.7 10H1.6M15.9 4.1l-1.5 1.5M5.6 14.4l-1.5 1.5M15.9 15.9l-1.5-1.5M5.6 5.6 4.1 4.1"
-        {...stroke}
-      />
+      <path d="M7 4.5v11M13 4.5v11" {...stroke} strokeWidth={2} />
     </svg>
   )
 }
 
-export function Moon({ size = 17, ...rest }) {
+export function Play({ size = 14, ...rest }) {
   return (
     <svg {...base} viewBox="0 0 20 20" width={size} height={size} {...rest}>
-      <path d="M16.5 12.4A7.1 7.1 0 0 1 7.6 3.5a7.1 7.1 0 1 0 8.9 8.9Z" {...stroke} />
+      <path d="M6.5 4.2v11.6L15.8 10 6.5 4.2Z" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
+/* The arrow Devorise sets in the corner of every card: up and to the right. */
+export function ArrowUpRight({ size = 18, ...rest }) {
+  return (
+    <svg {...base} viewBox="0 0 20 20" width={size} height={size} {...rest}>
+      <path d="M5.5 14.5 14.5 5.5M7 5.5h7.5V13" {...stroke} />
     </svg>
   )
 }

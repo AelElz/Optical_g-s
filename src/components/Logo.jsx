@@ -1,14 +1,7 @@
 import { Mark } from './Icons'
 import './Logo.css'
 
-/*
- * The lockup: the spectacles mark, then the wordmark.
- *
- * The mark is the brand's own Logo.svg. The wordmark beside it is set in
- * Readex Pro at regular weight with wide tracking, which is how every luxury
- * house sets a wordmark: Bugatti at 6px of tracking, Ferrari at 1.4. Weight
- * is never the emphasis.
- */
+/* The lockup: the gold spectacles mark, then the wordmark in heavy caps. */
 export default function Logo({ height = 20 }) {
   return (
     <span className="logo">

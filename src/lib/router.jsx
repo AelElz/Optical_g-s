@@ -24,7 +24,9 @@ export function RouterProvider({ children }) {
   }, [])
 
   const navigate = useCallback((to) => {
-    const next = clean(to.split('#')[0] || '/')
+    // The route is the pathname alone: a query (the shop's filters) or a
+    // hash rides along in the URL without changing which page renders.
+    const next = clean(to.split('#')[0].split('?')[0] || '/')
     const changedPage = next !== clean(window.location.pathname)
 
     window.history.pushState(null, '', to)

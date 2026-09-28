@@ -1,120 +1,109 @@
-import { useMemo, useRef } from 'react'
+import { useMemo } from 'react'
 import { useContent } from '../content'
 import products from '../data/products.json'
 import { useReveal } from '../hooks/useReveal'
-import { useScrollProgress } from '../hooks/useScrollProgress'
+import FocusText from '../components/FocusText'
 import Footer from '../components/Footer'
-import Kicker from '../components/Kicker'
+import Heading from '../components/Heading'
 import { ArrowRight, Mark } from '../components/Icons'
+import Kicker from '../components/Kicker'
 import Link from '../components/Link'
+import PageHead from '../components/PageHead'
 import { StoreCard } from '../components/StoreCard'
 import { telHref } from '../lib/format'
-import './Forms.css'
 import './APropos.css'
 
-/* Four frames from across the catalogue to sit beside the selection list.
-   Real products, not a stock photograph of "eyewear". */
-function pickFrames() {
-  const step = Math.floor(products.length / 4) || 1
-  return Array.from({ length: 4 }, (_, i) => products[(i * step + 3) % products.length])
-}
+/* Four frames to sit under the selection list: real products, hand-picked
+   from photographs that are clean cut-outs on white. */
+const SELECTION_IMAGES = [
+  '/products/gg2153o-1159.webp',
+  '/products/fe40216u-14a-1136.webp',
+  '/products/hi6416-1166.webp',
+  '/products/mod-2231-515.webp',
+]
+
+const pickFrames = () =>
+  SELECTION_IMAGES.map((image) => products.find((p) => p.image === image)).filter(Boolean)
 
 export default function APropos() {
   const t = useContent()
   const revealRef = useReveal()
-  const storeRef = useScrollProgress({ smoothing: 5 })
   const copy = t.aPropos
   const frames = useMemo(pickFrames, [])
 
   return (
     <div ref={revealRef}>
-      <main id="top" className="page page--light">
-        <section className="page__head">
-          <div className="container">
-            <Kicker className="reveal">{copy.kicker}</Kicker>
-            <h1 className="display page__title">
-              <span className="wipe">
-                <span>{copy.title}</span>
-              </span>
-            </h1>
-            <span className="rule page__rule" aria-hidden="true" />
+      <main id="top" className="about">
+        <PageHead kicker={copy.kicker} title={copy.title} />
+
+        {/* The intro, coming into focus: this page's one authored moment. */}
+        <section className="about-intro" data-surface="ink">
+          <div className="container section-grid">
+            <span aria-hidden="true" />
+            <FocusText text={copy.intro} className="about-intro__text" />
           </div>
         </section>
 
-        <section className="container about-intro">
-          <p className="about-intro__text reveal">{copy.intro}</p>
-        </section>
-
-        {/* Why choose us */}
-        <section className="about-why">
+        {/* The four commitments, as a ruled list rather than a card grid. */}
+        <section className="about-why section" data-surface="white">
           <div className="container">
-            <Kicker className="reveal">{copy.whyKicker}</Kicker>
-            <h2 className="section-title about-why__title wipe">
-              <span>{copy.whyTitle}</span>
-            </h2>
+            <div className="section-grid about-why__head">
+              <Kicker className="reveal">{copy.whyKicker}</Kicker>
+              <Heading className="h2" text={copy.whyTitle} />
+            </div>
 
-            <ul className="about-why__grid">
+            <ul className="about-why__list">
               {copy.why.map((item, index) => (
-                /* Keyed on `n`, not on the title: the title is copy, and
-                   keying on it would remount every card on a language
-                   switch and replay the whole section's enter animation. */
-                <li key={item.n} className="reveal" style={{ '--i': index % 3 }}>
-                  {/* The first tile is the gold one, and the class is what
-                      re-scopes the foreground tokens for it. */}
-                  <article
-                    className={`about-why__card${index === 0 ? ' about-why__card--gold' : ''}`}
-                  >
-                    <span className="about-why__n" aria-hidden="true">
-                      {String(item.n).padStart(2, '0')}
-                    </span>
-                    <h3>{item.title}</h3>
-                    <p>{item.body}</p>
-                  </article>
+                /* Keyed on `n`, not on the title: the title is copy. */
+                <li key={item.n} className="about-why__row reveal" style={{ '--i': index % 4 }}>
+                  <h3 className="about-why__title">
+                    <span className="lens-dot" aria-hidden="true" />
+                    {item.title}
+                  </h3>
+                  <p className="about-why__body">{item.body}</p>
                 </li>
               ))}
             </ul>
           </div>
         </section>
 
-        {/* Selection */}
-        <section className="about-selection">
-          <div className="container about-selection__inner">
-            <div>
+        {/* The selection: this page's gold stage. */}
+        <section className="about-selection section" data-surface="gold">
+          <div className="container">
+            <div className="section-grid">
               <Kicker className="reveal">{copy.selectionKicker}</Kicker>
-              <h2 className="section-title wipe">
-                <span>{copy.selectionTitle}</span>
-              </h2>
-              <div className="about-selection__photos reveal" style={{ '--i': 1 }}>
-                {frames.map((frame) => (
-                  <figure className="about-selection__photo" key={frame.id}>
-                    <img
-                      src={frame.image}
-                      alt={`${frame.brand} ${frame.ref}`}
-                      width="900"
-                      height="675"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </figure>
-                ))}
+              <div className="about-selection__body">
+                <Heading className="display" text={copy.selectionTitle} />
+                <ul className="about-selection__list">
+                  {copy.selection.map((item, index) => (
+                    <li key={item.n} className="reveal" style={{ '--i': index % 3 }}>
+                      <Mark height={12} className="about-selection__mark" />
+                      <span>{item.label}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
 
-            <ul className="about-selection__list">
-              {copy.selection.map((item, index) => (
-                <li key={item.n} className="reveal" style={{ '--i': index % 3 }}>
-                  <span className="about-selection__row">
-                    <Mark height={12} className="about-selection__mark" />
-                    <span>{item.label}</span>
-                  </span>
-                </li>
+            <div className="about-selection__plates reveal">
+              {frames.map((frame) => (
+                <figure className="about-selection__plate" key={frame.id}>
+                  <img
+                    src={frame.image}
+                    alt={`${frame.brand} ${frame.ref}`}
+                    width="900"
+                    height="675"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </figure>
               ))}
-            </ul>
+            </div>
           </div>
         </section>
 
         {/* The store */}
-        <section className="about-store section--ink" ref={storeRef}>
+        <section className="about-store section" data-surface="ink">
           <div className="container about-store__grid">
             <figure className="about-store__photo reveal">
               <img
@@ -127,19 +116,17 @@ export default function APropos() {
               />
             </figure>
 
-            <div>
+            <div className="about-store__copy">
               <Kicker className="reveal">{copy.storeKicker}</Kicker>
-              <h2 className="section-title wipe">
-                <span>{copy.storeTitle}</span>
-              </h2>
+              <Heading className="h2" text={copy.storeTitle} />
               <p className="about-store__name reveal" style={{ '--i': 1 }}>
                 {copy.storeName}
               </p>
               <div className="reveal" style={{ '--i': 2 }}>
-                <StoreCard tone="ink" />
+                <StoreCard />
               </div>
-              <div className="about-store__actions reveal" style={{ '--i': 3 }}>
-                <Link to="/boutique" className="btn btn--gold">
+              <div className="actions reveal" style={{ '--i': 3 }}>
+                <Link to="/boutique" className="btn btn--primary">
                   <span>{copy.cta}</span>
                   <ArrowRight className="btn__icon" />
                 </Link>

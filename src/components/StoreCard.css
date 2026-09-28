@@ -1,278 +1,113 @@
-/* Contact block */
-
+/* The shop's details: rows on hairlines, icons in the accent. */
 .store {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: var(--space-4);
 }
 
 .store__title {
-  margin: 0;
-  font-size: var(--fs-sub);
-  font-weight: var(--w-medium);
-  letter-spacing: -0.02em;
+  font-size: var(--size-h3);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-heading);
 }
 
 .store__list {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  border-top: var(--border-hair) solid var(--line);
+}
+
+.store__list > li {
+  border-bottom: var(--border-hair) solid var(--line);
 }
 
 .store__row {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 10px 0;
-  font-size: var(--fs-small);
+  gap: var(--space-4);
+  padding-block: var(--space-4);
+  font-size: var(--size-small);
+  font-weight: var(--weight-semibold);
   line-height: 1.5;
-  color: var(--ink-body);
-  transition: color 0.3s var(--ease-out);
+  transition: color var(--dur-fast) var(--ease-out);
 }
 
 .store__row svg {
   flex: none;
-  margin-top: 2px;
-  color: var(--gold-ink);
+  margin-top: 1px;
+  color: var(--accent-text);
 }
 
-a.store__row:hover,
-a.store__row:focus-visible {
-  color: var(--ink);
+a.store__row:hover {
+  color: var(--accent-text);
 }
 
 .store__row--static {
-  cursor: default;
+  color: var(--fg-muted);
 }
 
 .store__num {
   font-variant-numeric: tabular-nums;
 }
 
-.store--ink .store__row {
-  color: var(--white-body);
-}
-
-.store--ink .store__row svg {
-  color: var(--gold);
-}
-
-.store--ink a.store__row:hover,
-.store--ink a.store__row:focus-visible {
-  color: var(--on-dark);
-}
-
-.store--gold .store__row {
-  color: rgba(20, 23, 26, 0.72);
-}
-
-.store--gold .store__row svg {
-  color: var(--on-gold);
-}
-
-/* Opening hours */
-
-.hours {
-  padding: clamp(20px, 2.4vw, 28px);
-  border: 1px solid var(--line);
-  border-radius: var(--r);
-  background: var(--surface);
-}
-
-.panel--ink .hours {
-  border-color: var(--line-dark);
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.panel--gold .hours {
-  border-color: rgba(20, 23, 26, 0.16);
-  background: rgba(255, 255, 255, 0.5);
-}
+/* Hours */
 
 .hours__title {
-  margin: 0 0 14px;
-  font-size: var(--fs-label);
-  font-weight: var(--w-medium);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-muted);
-}
-
-.panel--ink .hours__title {
-  color: var(--white-muted);
+  margin-bottom: var(--space-3);
+  font-size: var(--label-size);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--label-tracking);
+  text-transform: var(--label-case);
+  color: var(--fg-muted);
 }
 
 .hours__table {
   width: 100%;
   border-collapse: collapse;
-  font-size: var(--fs-small);
+  font-size: var(--size-small);
+  font-variant-numeric: tabular-nums;
 }
 
 .hours__table th,
 .hours__table td {
-  padding: 9px 0;
-  border-bottom: 1px solid var(--line-soft);
-  text-align: start;
-  font-weight: 400;
-}
-
-.panel--ink .hours__table th,
-.panel--ink .hours__table td {
-  border-bottom-color: var(--line-dark);
-}
-
-.hours__table tr:last-child th,
-.hours__table tr:last-child td {
-  border-bottom: 0;
-}
-
-.hours__table th {
-  color: var(--ink-body);
-}
-
-.panel--ink .hours__table th {
-  color: var(--white-body);
+  padding-block: var(--space-2);
+  border-bottom: var(--border-hair) solid var(--line);
+  text-align: left;
+  font-weight: var(--weight-semibold);
 }
 
 .hours__table td {
-  text-align: end;
-  font-variant-numeric: tabular-nums;
-  font-weight: 500;
+  text-align: right;
 }
 
-/* Sunday reads as an absence, not as a value. */
-.hours__table tr[data-closed='true'] td {
-  color: var(--ink-muted);
-  font-weight: 400;
-}
-
-.panel--ink .hours__table tr[data-closed='true'] td {
-  color: var(--white-muted);
+.hours__table [data-closed='true'],
+.hours__table tr[data-closed='true'] > * {
+  color: var(--fg-muted);
 }
 
 .hours--compact .hours__table th,
 .hours--compact .hours__table td {
-  padding: 6px 0;
+  padding-block: 6px;
 }
 
-/* Map */
-
-.map {
-  position: relative;
-  overflow: hidden;
-  border-radius: var(--r);
-  border: 1px solid var(--line);
-  background: var(--surface);
-  aspect-ratio: 16 / 10;
-}
-
-@media (max-width: 700px) {
-  .map {
-    aspect-ratio: 4 / 3;
-  }
-}
-
-.map__frame {
-  width: 100%;
-  height: 100%;
-  border: 0;
-  display: block;
-  /* Google's own map is a saturated blue-and-green that fights a gold and
-     ink page. Pulling the saturation down lets it sit in the layout as a
-     texture rather than as a second brand. */
-  filter: var(--map-filter);
-}
-
-.map__open {
-  position: absolute;
-  left: 16px;
-  bottom: 16px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  padding-inline: 18px;
-  border-radius: 999px;
-  background: var(--surface);
-  color: var(--ink);
-  font-size: var(--fs-small);
-  font-weight: 500;
-  transition: translate 0.3s var(--ease-out);
-}
-
-.map__open:hover,
-.map__open:focus-visible {
-  translate: 0 -2px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .store__row,
-  .map__open {
-    transition: none;
-  }
-}
-
-/* Hours, laid out as a row */
-
-.hours--row {
-  padding: clamp(16px, 2vw, 22px) clamp(18px, 2.2vw, 26px);
-}
-
-.hours--row .hours__title {
-  margin-bottom: 12px;
-}
-
-/*
- * table-layout: fixed, so the seven columns are equal.
- *
- * Left to size themselves, "Wednesday" makes its column half again as wide
- * as "Friday" and the times underneath stop lining up, which is the one
- * thing a row of opening hours has to do.
- */
-.hours__table--row {
-  table-layout: fixed;
-}
-
+/* Row layout: days across, times beneath. */
 .hours__table--row th,
 .hours__table--row td {
-  padding: 0;
-  border: 0;
-  text-align: center;
-  white-space: nowrap;
+  padding: var(--space-3) var(--space-2) var(--space-3) 0;
+  text-align: left;
+  vertical-align: top;
 }
 
 .hours__days th {
-  padding-bottom: 7px;
-  font-size: 0.76rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  color: var(--ink-body);
+  font-size: var(--label-size);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--label-tracking);
+  text-transform: var(--label-case);
 }
 
-.hours__times td {
-  padding-top: 8px;
-  border-top: 1px solid var(--line-soft);
-  font-size: 0.82rem;
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-  text-align: center;
-}
-
-.hours__days th[data-closed='true'],
-.hours__times td[data-closed='true'] {
-  color: var(--ink-muted);
-  font-weight: 400;
-}
-
-/* Both spellings ship; the viewport picks one. */
 .hours__day-short {
   display: none;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1180px) {
   .hours__day-long {
     display: none;
   }
@@ -280,8 +115,44 @@ a.store__row:focus-visible {
   .hours__day-short {
     display: inline;
   }
+}
 
-  .hours__times td {
-    font-size: 0.72rem;
-  }
+/* Map */
+
+.map {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius-media);
+  background: var(--bg-sunken);
+}
+
+.map__frame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  filter: grayscale(0.7) contrast(1.04);
+}
+
+.map__open {
+  position: absolute;
+  left: var(--space-4);
+  bottom: var(--space-4);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--btn-h-sm);
+  padding: 0 var(--space-5);
+  border-radius: var(--radius-action);
+  background: var(--ink-900);
+  color: var(--white);
+  font-size: var(--label-size);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--label-tracking);
+  text-transform: var(--label-case);
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.map__open:hover {
+  background: var(--ink-700);
 }

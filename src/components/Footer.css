@@ -1,116 +1,91 @@
-/*
- * The footer is the second half of the page's 20% ink.
- *
- * It sits after the panel stack rather than inside it, so nothing pins over
- * it and it always arrives as the last thing you see.
- */
 .footer {
-  position: relative;
-  z-index: 40;
-  background: var(--deep);
-  color: var(--on-dark);
-  padding-block: clamp(56px, 9vh, 96px) clamp(24px, 4vh, 36px);
+  padding-top: clamp(64px, 8vw, 120px);
+  overflow: hidden;
+  /* The photo-through-type wordmark is the most expensive paint on the
+     site; nothing in the footer is laid out or painted until it is near. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 720px;
 }
 
-.footer__inner {
+.footer__top {
   display: grid;
-  gap: clamp(34px, 5vw, 56px);
+  gap: var(--space-10) var(--grid-gap);
   grid-template-columns: 1fr;
-  padding-bottom: clamp(38px, 6vh, 64px);
-  border-bottom: 1px solid var(--line-dark);
+  padding-bottom: clamp(40px, 5vw, 72px);
+  border-bottom: var(--border-hair) solid var(--line);
 }
 
 @media (min-width: 720px) {
-  .footer__inner {
-    grid-template-columns: repeat(2, 1fr);
+  .footer__top {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
-@media (min-width: 1040px) {
-  .footer__inner {
-    /* The brand column takes the extra room; the three link columns are
-       equal, so their headings line up. */
-    grid-template-columns: 1.5fr 1fr 1.4fr 1fr;
+@media (min-width: 1080px) {
+  .footer__top {
+    grid-template-columns: 4fr 2fr 3fr 2fr;
   }
+}
+
+.footer__brand {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.footer__logo {
+  align-self: flex-start;
 }
 
 .footer__tagline {
-  margin: 16px 0 0;
-  max-width: 26ch;
-  font-size: var(--fs-lede);
-  line-height: 1.4;
-  color: var(--gold);
-  letter-spacing: -0.015em;
+  max-width: 24ch;
+  font-size: var(--size-h3);
+  font-weight: var(--weight-bold);
+  line-height: 1.15;
+  letter-spacing: var(--tracking-heading);
+}
+
+.footer__tagline::after {
+  content: '.';
+  color: var(--accent);
 }
 
 .footer__title {
-  margin: 0 0 18px;
-  font-size: var(--fs-label);
-  font-weight: var(--w-medium);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--white-muted);
+  margin-bottom: var(--space-4);
+  font-size: var(--label-size);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--label-tracking);
+  text-transform: var(--label-case);
+  color: var(--fg-muted);
 }
 
-/*
- * Gap plus the link's own minimum height, not gap alone.
- *
- * WCAG 2.2 asks for a 24px target, and its "inline" exception is for links
- * inside a sentence. These sit one per line in a list, so they are standalone
- * targets and have to meet it. The links carry the height and the gap comes
- * down to match, so the column looks the same and every target is 24px tall.
- */
 .footer__list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.footer__list--contact {
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .footer__link {
-  display: inline-flex;
-  align-items: center;
-  min-height: 24px;
-  font-size: var(--fs-small);
-  color: var(--white-body);
-  transition: color 0.3s var(--ease-out);
+  display: inline-block;
+  padding-block: var(--space-1);
+  font-size: var(--size-small);
+  font-weight: var(--weight-semibold);
+  color: var(--fg);
+  transition: color var(--dur-fast) var(--ease-out);
 }
 
-.footer__link:hover,
-.footer__link:focus-visible {
-  color: var(--on-dark);
+.footer__link:hover {
+  color: var(--accent-text);
 }
 
-.footer__link--icon {
-  align-items: flex-start;
-  gap: 10px;
-  max-width: 34ch;
-  padding-block: 3px;
-  line-height: 1.45;
-}
-
-.footer__link--icon svg {
-  flex: none;
-  margin-top: 2px;
-  color: var(--gold);
-}
-
-.footer__num {
-  font-variant-numeric: tabular-nums;
+.footer__address {
+  max-width: 30ch;
+  line-height: 1.5;
 }
 
 .footer__social {
   display: flex;
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  gap: var(--space-2);
 }
 
 .footer__social-link {
@@ -118,90 +93,73 @@
   place-items: center;
   width: 44px;
   height: 44px;
-  border: 1px solid var(--line-dark);
-  border-radius: 999px;
-  color: var(--white-body);
+  border: var(--border-hair) solid var(--line);
+  border-radius: 50%;
   transition:
-    border-color 0.3s var(--ease-out),
-    color 0.3s var(--ease-out),
-    background-color 0.3s var(--ease-out);
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
 }
 
-.footer__social-link:hover,
-.footer__social-link:focus-visible {
-  border-color: var(--gold);
-  background: rgba(232, 195, 81, 0.12);
-  color: var(--gold);
+.footer__social-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .footer__hours {
-  margin: 20px 0 0;
-  max-width: 28ch;
-  font-size: var(--fs-small);
-  line-height: 1.5;
-  color: var(--white-muted);
+  margin-top: var(--space-4);
+  max-width: 26ch;
+  font-size: var(--size-small);
+  color: var(--fg-muted);
+}
+
+/*
+ * The name, as large as the page allows, with the store interior showing
+ * through the letters: the Devorise footer's window onto its film, made
+ * from the shop's own photograph.
+ */
+.footer__wordmark {
+  margin-block: clamp(24px, 3vw, 48px) clamp(8px, 1vw, 16px);
+  font-size: var(--size-wordmark);
+  font-weight: var(--weight-black);
+  letter-spacing: -0.05em;
+  line-height: 0.86;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--gold-500);
+  background:
+    linear-gradient(180deg, rgba(232, 195, 81, 0.62), rgba(232, 195, 81, 0.28)),
+    url('/media/hero.webp') center 40% / cover;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  user-select: none;
 }
 
 .footer__base {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px 24px;
-  padding-top: clamp(20px, 3vh, 30px);
-  font-size: 0.84rem;
-  color: var(--white-muted);
+  gap: var(--space-3) var(--space-8);
+  padding-block: var(--space-6) var(--space-8);
+  border-top: var(--border-hair) solid var(--line);
+  font-size: var(--size-micro);
+  font-weight: var(--weight-semibold);
+  color: var(--fg-muted);
 }
 
-.footer__rights,
-.footer__credit {
-  margin: 0;
-}
-
-.footer__credit {
-  margin-inline-end: auto;
-}
-
-.footer__top {
+.footer__up {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
+  margin-left: auto;
   min-height: 44px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  font-size: 0.84rem;
-  color: var(--white-body);
-  transition: color 0.3s var(--ease-out);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--label-tracking);
+  text-transform: var(--label-case);
+  color: var(--fg);
 }
 
-.footer__top:hover {
-  color: var(--gold);
-}
-
-/* The arrow points up. Rotating the one arrow beats shipping a second
-   icon that differs only in angle. */
-.footer__top-icon {
+.footer__up-icon {
   rotate: -90deg;
-  transition: translate 0.35s var(--ease-out);
-}
-
-.footer__top:hover .footer__top-icon {
-  translate: 0 -3px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .footer__link,
-  .footer__social-link,
-  .footer__top,
-  .footer__top-icon {
-    transition: none;
-  }
-}
-
-/* The logo is a link, so its box has to be at least as tall as the mark
-   inside it rather than collapsing to a text line box. */
-.footer__logo {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
 }

@@ -1,242 +1,173 @@
+/*
+ * The frame sheet: a drawer from the right, as retail catalogues open a
+ * product without leaving the grid. The photograph on its plate on top, then
+ * the house, the reference set large, the price and the facts.
+ */
 .quickview {
   position: fixed;
   inset: 0;
-  z-index: 150;
-  display: grid;
-  place-items: center;
-  padding: var(--pad-x);
+  z-index: var(--z-drawer);
 }
 
 .quickview__scrim {
   position: absolute;
   inset: 0;
-  background: var(--scrim);
-  /* A light blur behind a light sheet, so the grid reads as depth rather
-     than as a page that has simply been greyed out. */
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-  opacity: 0;
-  transition: opacity 0.42s var(--ease-out);
-}
-
-.quickview[data-open='true'] .quickview__scrim {
-  opacity: 1;
+  background: rgba(11, 13, 15, 0.56);
+  animation: qv-fade var(--dur-slow) var(--ease-out);
 }
 
 .quickview__sheet {
-  position: relative;
-  display: grid;
-  gap: clamp(20px, 3vw, 40px);
-  width: min(940px, 100%);
-  max-height: min(88svh, 760px);
+  position: absolute;
+  inset: 0 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  width: min(560px, 100%);
   overflow-y: auto;
+  border-radius: var(--radius-card) 0 0 var(--radius-card);
   overscroll-behavior: contain;
-  padding: clamp(20px, 3vw, 34px);
-  border-radius: var(--r);
-  background: var(--surface);
-  /* Enter from slightly below and slightly small, the way a sheet does. */
-  opacity: 0;
-  translate: 0 18px;
-  scale: 0.985;
-  transition:
-    opacity 0.45s var(--ease-out),
-    translate 0.45s var(--ease-out),
-    scale 0.45s var(--ease-out);
-}
-
-.quickview[data-open='true'] .quickview__sheet {
-  opacity: 1;
-  translate: 0 0;
-  scale: 1;
-}
-
-@media (min-width: 760px) {
-  .quickview__sheet {
-    grid-template-columns: 1.05fr 1fr;
-    align-items: center;
-  }
+  animation: qv-in var(--dur-slow) var(--ease-out);
 }
 
 .quickview__close {
   position: absolute;
-  top: 14px;
-  right: 14px;
-  z-index: 2;
+  top: var(--space-4);
+  right: var(--space-4);
+  z-index: 1;
   display: grid;
   place-items: center;
   width: 44px;
   height: 44px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--surface);
-  color: var(--ink);
-  transition:
-    background-color 0.3s var(--ease-out),
-    border-color 0.3s var(--ease-out);
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--ink-900);
+  box-shadow: 0 0 0 1px var(--line);
+  transition: background-color var(--dur-fast) var(--ease-out);
 }
 
 .quickview__close:hover {
-  background: var(--invert);
-  border-color: var(--invert);
-  color: var(--invert-text);
+  background: var(--stone-100);
 }
 
 .quickview__media {
-  border-radius: var(--r);
-  background: var(--plate);
+  flex: none;
   aspect-ratio: 4 / 3;
-  display: grid;
-  place-items: center;
+  margin: var(--space-4) var(--space-4) 0;
   overflow: hidden;
+  border: var(--border-hair) solid var(--line);
+  border-radius: var(--radius-media);
+  background: var(--plate);
 }
 
 .quickview__media img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  /* No padding. Every catalogue photograph is normalised to a 4:3 canvas
-     with the frame filling 86% of it, so the breathing room is baked into
-     the image and adding more here would shrink it twice. */
-  padding: 0;
-  filter: brightness(var(--plate-dim));
 }
 
 .quickview__body {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-5);
+  padding: var(--space-8) clamp(20px, 4vw, 40px) var(--space-10);
 }
 
 .quickview__brand {
-  margin: 0;
-  font-size: 0.78rem;
-  font-weight: var(--w-medium);
-  letter-spacing: 0.05em;
-  color: var(--gold-ink);
+  font-size: var(--label-size);
+  font-weight: var(--weight-black);
+  letter-spacing: var(--label-tracking);
+  text-transform: var(--label-case);
+  color: var(--accent-text);
 }
 
 .quickview__title {
-  margin: 4px 0 0;
-  font-size: clamp(1.7rem, 3.4vw, 2.5rem);
-  font-weight: var(--w-medium);
-  letter-spacing: -0.028em;
-  line-height: 1.06;
+  margin-top: calc(var(--space-4) * -1);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: var(--weight-bold);
+  line-height: 1.02;
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.quickview__title::after {
+  content: '.';
+  color: var(--gold-500);
 }
 
 .quickview__price {
-  margin: 10px 0 0;
-  font-size: var(--fs-lede);
-  font-variant-numeric: tabular-nums;
+  font-size: 1.5rem;
+  font-weight: var(--weight-bold);
 }
 
 .quickview__facts {
   display: grid;
-  gap: 0;
-  margin: 22px 0 0;
-  border-top: 1px solid var(--line-soft);
+  border-top: var(--border-hair) solid var(--line);
 }
 
 .quickview__fact {
   display: flex;
   justify-content: space-between;
-  gap: 20px;
-  padding: 11px 0;
-  border-bottom: 1px solid var(--line-soft);
-  font-size: var(--fs-small);
+  gap: var(--space-4);
+  padding-block: var(--space-3);
+  border-bottom: var(--border-hair) solid var(--line);
+  font-size: var(--size-small);
 }
 
 .quickview__fact dt {
-  color: var(--ink-body);
+  font-size: var(--label-size);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--label-tracking);
+  text-transform: var(--label-case);
+  color: var(--fg-muted);
 }
 
 .quickview__fact dd {
-  margin: 0;
-  text-align: end;
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
+  font-weight: var(--weight-semibold);
+  text-align: right;
+  text-transform: capitalize;
 }
 
 .quickview__note {
-  margin: 9px 0 0;
-  font-size: 0.8rem;
-  color: var(--ink-muted);
+  margin-top: calc(var(--space-3) * -1);
+  font-size: var(--size-micro);
+  color: var(--fg-muted);
 }
 
 .quickview__actions {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 24px;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.quickview__actions .stepper {
+  height: var(--btn-h);
 }
 
 .quickview__add {
   flex: 1;
-  min-width: 170px;
-}
-
-.quickview__add:disabled {
-  opacity: 0.45;
-  pointer-events: none;
 }
 
 .quickview__links {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px 26px;
-  margin-top: 22px;
+  gap: var(--space-3) var(--space-6);
 }
 
-/* Quantity stepper, shared with the cart */
-
-.stepper {
-  display: inline-flex;
-  align-items: center;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  height: 48px;
+@keyframes qv-in {
+  from {
+    translate: 100% 0;
+  }
 }
 
-.stepper__btn {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 46px;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: var(--ink);
-  transition:
-    background-color 0.25s var(--ease-out),
-    opacity 0.25s var(--ease-out);
-}
-
-.stepper__btn:hover:not(:disabled) {
-  background: var(--hover-wash);
-}
-
-.stepper__btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
-
-.stepper__value {
-  min-width: 26px;
-  text-align: center;
-  font-size: var(--fs-small);
-  font-weight: var(--w-medium);
-  font-variant-numeric: tabular-nums;
+@keyframes qv-fade {
+  from {
+    opacity: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .quickview__scrim,
-  .quickview__sheet,
-  .quickview__close,
-  .stepper__btn {
-    transition: none;
-  }
-
-  .quickview__sheet {
-    translate: 0 0;
-    scale: 1;
+  .quickview .quickview__sheet,
+  .quickview .quickview__scrim {
+    animation: none;
   }
 }
